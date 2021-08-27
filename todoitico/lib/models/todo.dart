@@ -45,6 +45,12 @@ class TheDatabase extends _$TheDatabase {
 class TheDatabaseService with ChangeNotifier {
   final TheDatabase db = TheDatabase();
 
+  @override
+  void dispose(){
+    closeDB();
+    super.dispose();
+  }
+
   Future<List<Todo>> get allTodoEntries => db.select(db.todos).get();
 
   Future<int> getTodoCount() async {
