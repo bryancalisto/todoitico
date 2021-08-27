@@ -15,6 +15,7 @@ class Todo extends DataClass implements Insertable<Todo> {
   final DateTime created;
   final DateTime limitDate;
   final DateTime modified;
+  final String status;
   Todo(
       {@required this.id,
       @required this.title,
@@ -22,7 +23,8 @@ class Todo extends DataClass implements Insertable<Todo> {
       @required this.creator,
       @required this.created,
       this.limitDate,
-      this.modified});
+      this.modified,
+      @required this.status});
   factory Todo.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -40,6 +42,8 @@ class Todo extends DataClass implements Insertable<Todo> {
           .mapFromDatabaseResponse(data['${effectivePrefix}limit_date']),
       modified: const DateTimeType()
           .mapFromDatabaseResponse(data['${effectivePrefix}modified']),
+      status: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}status']),
     );
   }
   @override
@@ -66,6 +70,9 @@ class Todo extends DataClass implements Insertable<Todo> {
     if (!nullToAbsent || modified != null) {
       map['modified'] = Variable<DateTime>(modified);
     }
+    if (!nullToAbsent || status != null) {
+      map['status'] = Variable<String>(status);
+    }
     return map;
   }
 
@@ -89,6 +96,8 @@ class Todo extends DataClass implements Insertable<Todo> {
       modified: modified == null && nullToAbsent
           ? const Value.absent()
           : Value(modified),
+      status:
+          status == null && nullToAbsent ? const Value.absent() : Value(status),
     );
   }
 
@@ -103,6 +112,7 @@ class Todo extends DataClass implements Insertable<Todo> {
       created: serializer.fromJson<DateTime>(json['created']),
       limitDate: serializer.fromJson<DateTime>(json['limitDate']),
       modified: serializer.fromJson<DateTime>(json['modified']),
+      status: serializer.fromJson<String>(json['status']),
     );
   }
   @override
@@ -116,6 +126,7 @@ class Todo extends DataClass implements Insertable<Todo> {
       'created': serializer.toJson<DateTime>(created),
       'limitDate': serializer.toJson<DateTime>(limitDate),
       'modified': serializer.toJson<DateTime>(modified),
+      'status': serializer.toJson<String>(status),
     };
   }
 
@@ -126,7 +137,8 @@ class Todo extends DataClass implements Insertable<Todo> {
           String creator,
           DateTime created,
           DateTime limitDate,
-          DateTime modified}) =>
+          DateTime modified,
+          String status}) =>
       Todo(
         id: id ?? this.id,
         title: title ?? this.title,
@@ -135,6 +147,7 @@ class Todo extends DataClass implements Insertable<Todo> {
         created: created ?? this.created,
         limitDate: limitDate ?? this.limitDate,
         modified: modified ?? this.modified,
+        status: status ?? this.status,
       );
   @override
   String toString() {
@@ -145,7 +158,8 @@ class Todo extends DataClass implements Insertable<Todo> {
           ..write('creator: $creator, ')
           ..write('created: $created, ')
           ..write('limitDate: $limitDate, ')
-          ..write('modified: $modified')
+          ..write('modified: $modified, ')
+          ..write('status: $status')
           ..write(')'))
         .toString();
   }
@@ -159,8 +173,10 @@ class Todo extends DataClass implements Insertable<Todo> {
               content.hashCode,
               $mrjc(
                   creator.hashCode,
-                  $mrjc(created.hashCode,
-                      $mrjc(limitDate.hashCode, modified.hashCode)))))));
+                  $mrjc(
+                      created.hashCode,
+                      $mrjc(limitDate.hashCode,
+                          $mrjc(modified.hashCode, status.hashCode))))))));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -171,7 +187,8 @@ class Todo extends DataClass implements Insertable<Todo> {
           other.creator == this.creator &&
           other.created == this.created &&
           other.limitDate == this.limitDate &&
-          other.modified == this.modified);
+          other.modified == this.modified &&
+          other.status == this.status);
 }
 
 class TodosCompanion extends UpdateCompanion<Todo> {
@@ -182,6 +199,7 @@ class TodosCompanion extends UpdateCompanion<Todo> {
   final Value<DateTime> created;
   final Value<DateTime> limitDate;
   final Value<DateTime> modified;
+  final Value<String> status;
   const TodosCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -190,6 +208,7 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     this.created = const Value.absent(),
     this.limitDate = const Value.absent(),
     this.modified = const Value.absent(),
+    this.status = const Value.absent(),
   });
   TodosCompanion.insert({
     this.id = const Value.absent(),
@@ -199,9 +218,11 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     this.created = const Value.absent(),
     this.limitDate = const Value.absent(),
     this.modified = const Value.absent(),
+    @required String status,
   })  : title = Value(title),
         content = Value(content),
-        creator = Value(creator);
+        creator = Value(creator),
+        status = Value(status);
   static Insertable<Todo> custom({
     Expression<int> id,
     Expression<String> title,
@@ -210,6 +231,7 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     Expression<DateTime> created,
     Expression<DateTime> limitDate,
     Expression<DateTime> modified,
+    Expression<String> status,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -219,6 +241,7 @@ class TodosCompanion extends UpdateCompanion<Todo> {
       if (created != null) 'created': created,
       if (limitDate != null) 'limit_date': limitDate,
       if (modified != null) 'modified': modified,
+      if (status != null) 'status': status,
     });
   }
 
@@ -229,7 +252,8 @@ class TodosCompanion extends UpdateCompanion<Todo> {
       Value<String> creator,
       Value<DateTime> created,
       Value<DateTime> limitDate,
-      Value<DateTime> modified}) {
+      Value<DateTime> modified,
+      Value<String> status}) {
     return TodosCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -238,6 +262,7 @@ class TodosCompanion extends UpdateCompanion<Todo> {
       created: created ?? this.created,
       limitDate: limitDate ?? this.limitDate,
       modified: modified ?? this.modified,
+      status: status ?? this.status,
     );
   }
 
@@ -265,6 +290,9 @@ class TodosCompanion extends UpdateCompanion<Todo> {
     if (modified.present) {
       map['modified'] = Variable<DateTime>(modified.value);
     }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
     return map;
   }
 
@@ -277,7 +305,8 @@ class TodosCompanion extends UpdateCompanion<Todo> {
           ..write('creator: $creator, ')
           ..write('created: $created, ')
           ..write('limitDate: $limitDate, ')
-          ..write('modified: $modified')
+          ..write('modified: $modified, ')
+          ..write('status: $status')
           ..write(')'))
         .toString();
   }
@@ -339,9 +368,18 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
   GeneratedColumn<DateTime> get modified =>
       _modified ??= GeneratedColumn<DateTime>('modified', aliasedName, true,
           typeName: 'INTEGER', requiredDuringInsert: false);
+  final VerificationMeta _statusMeta = const VerificationMeta('status');
+  GeneratedColumn<String> _status;
+  @override
+  GeneratedColumn<String> get status => _status ??= GeneratedColumn<String>(
+      'status', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 1),
+      typeName: 'TEXT',
+      requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, title, content, creator, created, limitDate, modified];
+      [id, title, content, creator, created, limitDate, modified, status];
   @override
   String get aliasedName => _alias ?? 'todos';
   @override
@@ -383,6 +421,12 @@ class $TodosTable extends Todos with TableInfo<$TodosTable, Todo> {
     if (data.containsKey('modified')) {
       context.handle(_modifiedMeta,
           modified.isAcceptableOrUnknown(data['modified'], _modifiedMeta));
+    }
+    if (data.containsKey('status')) {
+      context.handle(_statusMeta,
+          status.isAcceptableOrUnknown(data['status'], _statusMeta));
+    } else if (isInserting) {
+      context.missing(_statusMeta);
     }
     return context;
   }
