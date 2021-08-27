@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
+import 'package:todoitico/views/listTodosVw.dart';
 
 void main() {
   runApp(
-    Provider<TheDatabase>(
-      create: (context) => TheDatabase(),
+    ChangeNotifierProvider<TheDatabaseService>(
+      create: (context) => TheDatabaseService(),
       child: TodoitoApp(),
-      dispose: (context, db) => db.close(),
+      // dispose: (context, db) => db.closeDB(),
     ),
   );
 }
@@ -20,28 +21,27 @@ class TodoitoApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Container(
-        child: FutureBuilder(
-          future: Provider.of<TheDatabase>(context).allTodoEntries,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              print(snapshot.data[0]);
-              // Todo newTodo = Todo(
-              //   title: 'titulo',
-              //   content: 'cont',
-              //   created: DateTime.now(),
-              //   creator: 'Bryan',
-              //   limitDate: DateTime.now().add(Duration(days:3)),
-              // );
-              // Provider.of<TheDatabase>(context).addTodo(newTodo.toCompanion(true));
-              return Text('FUNCO');
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              return Text('Cargando');
-            }
-          },
-        ),
+      home: FutureBuilder(
+        future: Provider.of<TheDatabaseService>(context).allTodoEntries,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            // print(snapshot.data[0]);
+            // Todo newTodo = Todo(
+            //   title: 'titulo2',
+            //   content: 'contENIdo testk',
+            //   created: DateTime.now(),
+            //   creator: 'Carla',
+            //   limitDate: DateTime.now().add(Duration(days:3)),
+            //   status: 'P'
+            // );
+            // Provider.of<TheDatabaseService>(context).addTodo(newTodo.toCompanion(true));
+            return ListTodosVw();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return Text('Cargando');
+          }
+        },
       ),
     );
   }
