@@ -1,22 +1,44 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:todoitico/models/todo.dart';
+import 'package:todoitico/views/confirmDeleteVw.dart';
+import 'package:todoitico/views/newTodoVw.dart';
 
 class TodoTile extends StatelessWidget {
-  final bool isChecked;
-  final String content;
   final Function chkboxCallback;
+  final Todo todo;
 
-  const TodoTile({@required this.isChecked, @required this.content, @required this.chkboxCallback})
-      : super();
+  const TodoTile({@required this.todo, @required this.chkboxCallback}) : super();
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(content),
-      trailing: Checkbox(
-        activeColor: Colors.greenAccent,
-        value: isChecked,
-        onChanged: chkboxCallback,
+    return GestureDetector(
+      onLongPress: () {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return ConfirmDeleteVw(todoId: todo.id);
+            });
+      },
+      onTap: () {
+        showModalBottomSheet(
+          isScrollControlled: true,
+          context: context,
+          builder: (context) => SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: NewTodoVw(todoToUpdate: todo),
+            ),
+          ),
+        );
+      },
+      child: ListTile(
+        title: Text(todo.title),
+        trailing: Checkbox(
+          activeColor: Colors.greenAccent,
+          value: todo.status == 'P' ? false : true,
+          onChanged: chkboxCallback,
+        ),
       ),
     );
   }

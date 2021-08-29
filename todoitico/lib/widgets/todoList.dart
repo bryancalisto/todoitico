@@ -10,15 +10,14 @@ class TodoList extends StatelessWidget {
     return Consumer<TheDatabaseService>(
       builder: (context, data, child) {
         return FutureBuilder(
-          future: Future.wait([data.allTodoEntries, data.getTodoCount()]),
+          future: Future.wait([data.allTodoEntries, data.getTodoCount(false)]),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
                 itemBuilder: (context, index) {
                   Todo item = snapshot.data[0][index];
                   return TodoTile(
-                    content: item.title,
-                    isChecked: item.status == 'P' ? false : true,
+                    todo: item,
                     chkboxCallback: (newState) {
                       data.checkboxCallback(item.id);
                     },

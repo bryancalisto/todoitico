@@ -46,15 +46,22 @@ class TheDatabaseService with ChangeNotifier {
   final TheDatabase db = TheDatabase();
 
   @override
-  void dispose(){
+  void dispose() {
     closeDB();
     super.dispose();
   }
 
   Future<List<Todo>> get allTodoEntries => db.select(db.todos).get();
 
-  Future<int> getTodoCount() async {
-    Expression countExp = db.todos.id.count();
+  Future<int> getTodoCount(bool pendingOnly) async {
+    Expression countExp;
+
+    if (pendingOnly) {
+      countExp = countAll(filter: db.todos.status.equals('P'));
+    } else {
+      countExp = db.todos.id.count();
+    }
+
     final query = db.selectOnly(db.todos)..addColumns([countExp]);
     return await query.map((row) => row.read(countExp)).getSingle();
   }
@@ -62,6 +69,7 @@ class TheDatabaseService with ChangeNotifier {
   Future<bool> addTodo(TodosCompanion entry) async {
     try {
       db.into(db.todos).insert(entry);
+      notifyListeners();
       return true;
     } catch (e) {
       print('Error addTodo: ' + e);
@@ -69,9 +77,24 @@ class TheDatabaseService with ChangeNotifier {
     }
   }
 
+  Future<bool> updateTodo(TodosCompanion entry) async {
+    try {
+      print('EL ID: ${entry.id.value}');
+      db.update(db.todos)..where((reg) => reg.id.equals(entry.id.value))..write(entry);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      print('Error updateTodo: ' + e);
+      return false;
+    }
+  }
+
   Future<bool> deleteTodo(int id) async {
     try {
-      db.delete(db.todos)..where((reg) => reg.id.equals(id));
+      db.delete(db.todos)
+        ..where((reg) => reg.id.equals(id))
+        ..go();
+      notifyListeners();
       return true;
     } catch (e) {
       print('Error deleteTodo: ' + e);
