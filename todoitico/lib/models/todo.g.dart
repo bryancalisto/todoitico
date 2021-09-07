@@ -17,7 +17,7 @@ class Todo extends DataClass implements Insertable<Todo> {
   final DateTime modified;
   final String status;
   Todo(
-      {@required this.id,
+      {this.id,
       @required this.title,
       @required this.content,
       @required this.creator,

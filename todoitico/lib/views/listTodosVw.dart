@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
-import 'package:todoitico/views/newTodoVw.dart';
+import 'package:todoitico/views/manageTodoVw.dart';
 import 'package:todoitico/widgets/todoList.dart';
 
 class ListTodosVw extends StatelessWidget {
@@ -19,7 +19,7 @@ class ListTodosVw extends StatelessWidget {
             builder: (context) => SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: NewTodoVw(),
+                child: ManageTodoVw(),
               ),
             ),
           );

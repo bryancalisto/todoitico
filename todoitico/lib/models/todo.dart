@@ -35,7 +35,7 @@ LazyDatabase _openConnection() {
 
 @UseMoor(tables: [Todos])
 class TheDatabase extends _$TheDatabase {
-  TheDatabase() : super(_openConnection());
+  TheDatabase([VmDatabase vmDatabase]) : super(_openConnection());
 
   // you should bump this number whenever you change or add a table definition
   @override
@@ -43,7 +43,9 @@ class TheDatabase extends _$TheDatabase {
 }
 
 class TheDatabaseService with ChangeNotifier {
-  final TheDatabase db = TheDatabase();
+  final TheDatabase db;
+
+  TheDatabaseService(this.db);
 
   @override
   void dispose() {
@@ -79,8 +81,9 @@ class TheDatabaseService with ChangeNotifier {
 
   Future<bool> updateTodo(TodosCompanion entry) async {
     try {
-      print('EL ID: ${entry.id.value}');
-      db.update(db.todos)..where((reg) => reg.id.equals(entry.id.value))..write(entry);
+      db.update(db.todos)
+        ..where((reg) => reg.id.equals(entry.id.value))
+        ..write(entry);
       notifyListeners();
       return true;
     } catch (e) {

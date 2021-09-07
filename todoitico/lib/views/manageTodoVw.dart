@@ -3,19 +3,18 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
 
-class NewTodoVw extends StatefulWidget {
+class ManageTodoVw extends StatefulWidget {
   final Todo todoToUpdate;
 
-  const NewTodoVw({this.todoToUpdate}) : super();
+  const ManageTodoVw({this.todoToUpdate}) : super();
 
   @override
-  _NewTodoVwState createState() => _NewTodoVwState();
+  _ManageTodoVwState createState() => _ManageTodoVwState();
 }
 
-class _NewTodoVwState extends State<NewTodoVw> {
+class _ManageTodoVwState extends State<ManageTodoVw> {
   final titleCtl = TextEditingController();
   final contentCtl = TextEditingController();
   final dateCtl = TextEditingController();

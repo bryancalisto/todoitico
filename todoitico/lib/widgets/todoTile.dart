@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todoitico/models/todo.dart';
 import 'package:todoitico/views/confirmDeleteVw.dart';
-import 'package:todoitico/views/newTodoVw.dart';
+import 'package:todoitico/views/manageTodoVw.dart';
 
 class TodoTile extends StatelessWidget {
   final Function chkboxCallback;
@@ -27,7 +27,7 @@ class TodoTile extends StatelessWidget {
           builder: (context) => SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: NewTodoVw(todoToUpdate: todo),
+              child: ManageTodoVw(todoToUpdate: todo),
             ),
           ),
         );
