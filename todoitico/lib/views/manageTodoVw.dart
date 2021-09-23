@@ -1,9 +1,11 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
+import 'package:todoitico/widgets/mainButton.dart';
 
 class ManageTodoVw extends StatefulWidget {
   final Todo todoToUpdate;
@@ -38,13 +40,12 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
   Widget build(BuildContext context) {
     return Container(
       color: Color(0xff757575),
+      padding: EdgeInsets.all(5),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-          ),
+          border: Border.all(width: 4, color: Colors.white10),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
         child: Container(
           padding: EdgeInsets.all(20),
@@ -57,12 +58,6 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                 maxLength: 32,
                 decoration: InputDecoration(
                   labelText: 'Título',
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.greenAccent,
-                      width: 5,
-                    ),
-                  ),
                 ),
               ),
               SizedBox(height: 20),
@@ -74,12 +69,6 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                 maxLength: 256,
                 decoration: InputDecoration(
                   labelText: 'Contenido',
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.greenAccent,
-                      width: 5,
-                    ),
-                  ),
                 ),
               ),
               SizedBox(height: 20),
@@ -87,9 +76,23 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                 readOnly: true,
                 onTap: () async {
                   DateTime pickedDate = await showDatePicker(
+                      builder: (context, datePicker) {
+                        return Theme(
+                          data: ThemeData.light().copyWith(
+                            colorScheme: ColorScheme.light(
+                              primary: Colors.greenAccent,
+                              onPrimary: Colors.white,
+                              surface: Colors.greenAccent,
+                              onSurface: Colors.black,
+                            ),
+                          ),
+                          child: datePicker,
+                        );
+                      },
                       context: context,
                       initialDate: date ?? DateTime.now(),
-                      firstDate: DateTime(2000), //DateTime.now() - not to allow to choose before today.
+                      firstDate: DateTime(2000),
+                      //DateTime.now() - not to allow to choose before today.
                       lastDate: DateTime(2101));
 
                   if (pickedDate != null) {
@@ -105,12 +108,6 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                 controller: dateCtl,
                 decoration: InputDecoration(
                   labelText: 'Fecha límite',
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.greenAccent,
-                      width: 5,
-                    ),
-                  ),
                 ),
               ),
               SizedBox(height: 20),
@@ -120,17 +117,10 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                 maxLength: 50,
                 decoration: InputDecoration(
                   labelText: '¿A quién se le ocurrió la idea?',
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.greenAccent,
-                      width: 1,
-                    ),
-                  ),
                 ),
               ),
               SizedBox(height: 20),
-              TextButton(
-                child: Text('Guardar', style: TextStyle(color: Colors.black)),
+              MainButton(
                 onPressed: () {
                   titleCtl.text = titleCtl.text.trim();
                   contentCtl.text = contentCtl.text.trim();
@@ -152,7 +142,7 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
 
                     if (widget.todoToUpdate == null) {
                       // CREATE
-                      Provider.of<TheDatabaseService>(context, listen: false).addTodo(newTodoData.toCompanion(true));
+                      Provider.of<BaseDatabaseService>(context, listen: false).addTodo(newTodoData.toCompanion(true));
                     } else {
                       // UPDATE
                       Todo newVersion = widget.todoToUpdate.copyWith(
@@ -164,8 +154,7 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                         limitDate: date,
                       );
 
-                      Provider.of<TheDatabaseService>(context, listen: false)
-                          .updateTodo(newVersion.toCompanion(true));
+                      Provider.of<BaseDatabaseService>(context, listen: false).updateTodo(newVersion.toCompanion(true));
                     }
                     Navigator.pop(context);
                   } catch (e) {

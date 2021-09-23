@@ -1,27 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
 import 'package:todoitico/views/listTodosVw.dart';
 import 'package:todoitico/widgets/theLoader.dart';
 
 void main() {
-  runApp(TodoitoApp());
+  final TheDatabase db = TheDatabase();
+  runApp(TodoitoApp(dbService: TheDatabaseService(db)));
 }
 
 class TodoitoApp extends StatelessWidget {
-  final TheDatabase db = TheDatabase();
+
+  final dbService;
+
+  const TodoitoApp({this.dbService});
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<TheDatabaseService>(
-      create: (context) => TheDatabaseService(db),
+    return ChangeNotifierProvider<BaseDatabaseService>.value(
+      value: dbService ,
       builder: (context, app) {
         return MaterialApp(
           title: 'Todoito',
           theme: ThemeData(
-            primarySwatch: Colors.blue,
+            textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.greenAccent),
+            textTheme: GoogleFonts.merriweatherTextTheme(),
+            inputDecorationTheme: InputDecorationTheme(
+              labelStyle: TextStyle(color: Colors.grey),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.greenAccent,
+                  width: 3,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.greenAccent,
+                  width: 2,
+                ),
+              ),
+            ),
           ),
           home: FutureBuilder(
-            future: Provider.of<TheDatabaseService>(context).allTodoEntries,
+            future: Provider.of<BaseDatabaseService>(context).allTodoEntries,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 // print(snapshot.data[0]);
@@ -47,3 +69,7 @@ class TodoitoApp extends StatelessWidget {
     );
   }
 }
+
+/*
+* TODO: Add below padding in todos list to allow floating button push and todo status toggle
+* */

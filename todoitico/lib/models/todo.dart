@@ -42,7 +42,22 @@ class TheDatabase extends _$TheDatabase {
   int get schemaVersion => 2;
 }
 
-class TheDatabaseService with ChangeNotifier {
+abstract class BaseDatabaseService implements ChangeNotifier {
+  Future<List<Todo>> get allTodoEntries;
+  Future<int> getTodoCount(bool pendingOnly);
+
+  Future<bool> addTodo(TodosCompanion entry);
+
+  Future<bool> updateTodo(TodosCompanion entry);
+
+  Future<bool> deleteTodo(int id);
+
+  Future<void> checkboxCallback(int id);
+
+  void closeDB();
+}
+
+class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
   final TheDatabase db;
 
   TheDatabaseService(this.db);
@@ -105,7 +120,7 @@ class TheDatabaseService with ChangeNotifier {
     }
   }
 
-  void checkboxCallback(int id) async {
+  Future<void> checkboxCallback(int id) async {
     try {
       Todo todo = await (db.select(db.todos)..where((reg) => reg.id.equals(id))).getSingle();
       (db.update(db.todos)..where((reg) => reg.id.equals(id)))

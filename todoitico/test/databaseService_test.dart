@@ -6,6 +6,13 @@ void main() {
   TheDatabase db;
   TheDatabaseService dbService;
 
+  final date = DateTime.parse('2021-12-25');
+  const title = 'title';
+  const content = 'content';
+  const creator = 'creator';
+  final limitDate = date.add(Duration(days: 3));
+  const status = 'P';
+
   setUp(() {
     db = TheDatabase(VmDatabase.memory());
     dbService = TheDatabaseService(db);
@@ -18,13 +25,6 @@ void main() {
   group('ADD TODO', () {
     test('Created todos should be returned', () async {
       // ARRANGE
-      final date = DateTime.parse('2021-12-25');
-      const title = 'title';
-      const content = 'content';
-      const creator = 'creator';
-      final limitDate = date.add(Duration(days: 3));
-      const status = 'P';
-
       Todo newTodo =
           Todo(title: title, content: content, created: date, creator: creator, limitDate: limitDate, status: status);
 
@@ -46,26 +46,18 @@ void main() {
     test('Todo count (pending only) should return 2 pending todos', () async {
       // ARRANGE
       db.delete(db.todos).go();
-      final date = DateTime.parse('2021-12-25');
-      const title = 'title';
-      const content = 'content';
-      const creator = 'creator';
-      final limitDate = date.add(Duration(days: 3));
-      const status = 'P';
 
       Todo newTodo1 =
           Todo(title: title, content: content, created: date, creator: creator, limitDate: limitDate, status: status);
-
       Todo newTodo2 =
           Todo(title: title, content: content, created: date, creator: creator, limitDate: limitDate, status: status);
-
       Todo newTodo3 =
           Todo(title: title, content: content, created: date, creator: creator, limitDate: limitDate, status: 'F');
-
-      // ACT
       dbService.addTodo(newTodo1.toCompanion(true));
       dbService.addTodo(newTodo2.toCompanion(true));
       dbService.addTodo(newTodo3.toCompanion(true));
+
+      // ACT
       int count = await dbService.getTodoCount(true);
 
       // ASSERT
@@ -84,30 +76,101 @@ void main() {
     test('Todo count should return 2 if there is 1 pending todos and 1 fulfilled', () async {
       // ARRANGE
       db.delete(db.todos).go();
-      final date = DateTime.parse('2021-12-25');
-      const title = 'title';
-      const content = 'content';
-      const creator = 'creator';
-      final limitDate = date.add(Duration(days: 3));
-
       Todo newTodo1 =
           Todo(title: title, content: content, created: date, creator: creator, limitDate: limitDate, status: 'P');
-
       Todo newTodo2 =
           Todo(title: title, content: content, created: date, creator: creator, limitDate: limitDate, status: 'F');
-
-      // ACT
       dbService.addTodo(newTodo1.toCompanion(true));
       dbService.addTodo(newTodo2.toCompanion(true));
+
+      // ACT
       int count = await dbService.getTodoCount(false);
       // ASSERT
       expect(count, 2);
     });
   });
 
-  group('UPDATE TODO', () {});
+  group('UPDATE TODO', () {
+    test('Todo gets updated', () async {
+      // ARRANGE
+      db.delete(db.todos).go();
+      final dateUpd = DateTime.parse('2021-12-26');
+      const titleUpd = 'title_';
+      const contentUpd = 'content_';
+      const creatorUpd = 'creator_';
+      final limitDateUpd = date.add(Duration(days: 4));
 
-  group('DELETE TODO', () {});
+      Todo newTodo1 =
+          Todo(title: title, content: content, created: date, creator: creator, limitDate: limitDate, status: status);
 
-  group('CHECKBOX TOGGLE', () {});
+      Todo newTodo2 =
+          Todo(title: title, content: content, created: date, creator: creator, limitDate: limitDate, status: status);
+
+      dbService.addTodo(newTodo1.toCompanion(true));
+      dbService.addTodo(newTodo2.toCompanion(true));
+
+      newTodo1 = (await dbService.allTodoEntries).first;
+
+      Todo updatedTodo1 = newTodo1.copyWith(
+        created: dateUpd,
+        creator: creatorUpd,
+        content: contentUpd,
+        title: titleUpd,
+        limitDate: limitDateUpd,
+      );
+
+      // ACT
+      await dbService.updateTodo(updatedTodo1.toCompanion(true));
+      final updated = (await dbService.allTodoEntries).first;
+
+      // ASSERT
+      expect(updated, updatedTodo1);
+    });
+  });
+
+  group('DELETE TODO', () {
+    test('Todo gets deleted', () async {
+      // ARRANGE
+      db.delete(db.todos).go();
+      Todo newTodo1 =
+          Todo(title: title, content: content, created: date, creator: creator, limitDate: limitDate, status: status);
+
+      dbService.addTodo(newTodo1.toCompanion(true));
+      newTodo1 = (await dbService.allTodoEntries).first;
+
+      // ACT
+      await dbService.deleteTodo(newTodo1.id);
+      final nRegs = (await dbService.allTodoEntries).length;
+
+      // ASSERT
+      expect(nRegs, 0);
+    });
+  });
+
+  group('CHECKBOX TOGGLE', () {
+    test('Todo state should be toggled between P and F', () async {
+      // ARRANGE
+      db.delete(db.todos).go();
+      Todo newTodo1 =
+          Todo(title: title, content: content, created: date, creator: creator, limitDate: limitDate, status: status);
+      dbService.addTodo(newTodo1.toCompanion(true));
+      newTodo1 = (await dbService.allTodoEntries).first;
+
+      // P -> F
+      // ACT
+      await dbService.checkboxCallback(newTodo1.id);
+      Todo updated = (await dbService.allTodoEntries).first;
+
+      // ASSERT
+      expect(updated.status, 'F');
+
+      // F -> P
+      // ACT
+      await dbService.checkboxCallback(updated.id);
+      updated = (await dbService.allTodoEntries).first;
+
+      // ASSERT
+      expect(updated.status, 'P');
+    });
+  });
 }

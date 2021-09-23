@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
 import 'package:todoitico/views/manageTodoVw.dart';
@@ -11,7 +12,10 @@ class ListTodosVw extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.greenAccent,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.greenAccent,
+        shape: StadiumBorder(
+          side: BorderSide(color: Colors.white70, width: 5),
+        ),
         onPressed: () {
           showModalBottomSheet(
             isScrollControlled: true,
@@ -26,36 +30,38 @@ class ListTodosVw extends StatelessWidget {
         },
         child: Icon(
           Icons.add,
-          color: Colors.greenAccent,
-          size: 37,
+          color: Colors.black,
+          size: 39,
         ),
       ),
       body: FutureBuilder(
-        future: Provider.of<TheDatabaseService>(context).getTodoCount(true),
+        future: Provider.of<BaseDatabaseService>(context).getTodoCount(true),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   padding: EdgeInsets.only(left: 10, top: 20, right: 10, bottom: 20),
-                  child: Column(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        'Pending: ${snapshot.data}',
-                        style: TextStyle(fontSize: 20),
-                      ),
+                      Icon(Icons.all_inclusive, size: 23,),
+                      SizedBox(width: 5),
+                      Text('Pending: ${snapshot.data}', style: GoogleFonts.merriweather(fontSize: 22)),
                     ],
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.black, width: 4),
+                    ),
                   ),
                 ),
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(20),
-                        topRight: Radius.circular(20),
-                      ),
                     ),
                     child: TodoList(),
                   ),

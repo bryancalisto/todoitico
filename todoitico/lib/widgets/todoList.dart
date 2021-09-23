@@ -7,7 +7,7 @@ import 'package:todoitico/widgets/todoTile.dart';
 class TodoList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<TheDatabaseService>(
+    return Consumer<BaseDatabaseService>(
       builder: (context, data, child) {
         return FutureBuilder(
           future: Future.wait([data.allTodoEntries, data.getTodoCount(false)]),
@@ -17,6 +17,7 @@ class TodoList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   Todo item = snapshot.data[0][index];
                   return TodoTile(
+                    key: Key(item.id.toString()),
                     todo: item,
                     chkboxCallback: (newState) {
                       data.checkboxCallback(item.id);
