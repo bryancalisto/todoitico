@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
 import 'package:todoitico/views/manageTodoVw.dart';
@@ -47,9 +46,12 @@ class ListTodosVw extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.all_inclusive, size: 23,),
+                      Icon(
+                        Icons.all_inclusive,
+                        size: 23,
+                      ),
                       SizedBox(width: 5),
-                      Text('Pending: ${snapshot.data}', style: GoogleFonts.merriweather(fontSize: 22)),
+                      Text('Pendientes: ${snapshot.data}', style: TextStyle(fontSize: 22)),
                     ],
                   ),
                   decoration: BoxDecoration(

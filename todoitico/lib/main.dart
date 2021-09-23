@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
 import 'package:todoitico/views/listTodosVw.dart';
@@ -7,14 +6,14 @@ import 'package:todoitico/widgets/theLoader.dart';
 
 void main() {
   final TheDatabase db = TheDatabase();
-  runApp(TodoitoApp(dbService: TheDatabaseService(db)));
+  runApp(TodoitoApp(TheDatabaseService(db)));
 }
 
 class TodoitoApp extends StatelessWidget {
 
   final dbService;
 
-  const TodoitoApp({this.dbService});
+  const TodoitoApp(this.dbService);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +24,7 @@ class TodoitoApp extends StatelessWidget {
           title: 'Todoito',
           theme: ThemeData(
             textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.greenAccent),
-            textTheme: GoogleFonts.merriweatherTextTheme(),
+            fontFamily: 'Merriweather',
             inputDecorationTheme: InputDecorationTheme(
               labelStyle: TextStyle(color: Colors.grey),
               enabledBorder: UnderlineInputBorder(
