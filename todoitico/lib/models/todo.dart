@@ -25,17 +25,23 @@ class Todos extends Table {
   TextColumn get status => text().withLength(min: 1, max: 1)();
 }
 
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return VmDatabase(file);
-  });
+LazyDatabase _openConnection(bool useMemoryDB) {
+  if (!useMemoryDB) {
+    return LazyDatabase(() async {
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final file = File(p.join(dbFolder.path, 'db.sqlite'));
+      return VmDatabase(file);
+    });
+  } else {
+    return LazyDatabase(() async {
+      return VmDatabase.memory();
+    });
+  }
 }
 
 @UseMoor(tables: [Todos])
 class TheDatabase extends _$TheDatabase {
-  TheDatabase([VmDatabase vmDatabase]) : super(_openConnection());
+  TheDatabase({bool useMemoryDB = false}) : super(_openConnection(useMemoryDB));
 
   // you should bump this number whenever you change or add a table definition
   @override
@@ -44,6 +50,7 @@ class TheDatabase extends _$TheDatabase {
 
 abstract class BaseDatabaseService implements ChangeNotifier {
   Future<List<Todo>> get allTodoEntries;
+
   Future<int> getTodoCount(bool pendingOnly);
 
   Future<bool> addTodo(TodosCompanion entry);

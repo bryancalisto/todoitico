@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moor/ffi.dart';
 import 'package:todoitico/models/todo.dart';
 
 void main() {
@@ -14,7 +13,7 @@ void main() {
   const status = 'P';
 
   setUp(() {
-    db = TheDatabase(VmDatabase.memory());
+    db = TheDatabase(useMemoryDB: true);
     dbService = TheDatabaseService(db);
   });
 
