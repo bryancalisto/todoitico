@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
+import 'package:todoitico/services/theDatabaseSvc.dart';
 import 'package:todoitico/widgets/todoTile.dart';
 
 class TodoList extends StatelessWidget {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
+import 'package:todoitico/services/theDatabaseSvc.dart';
 import 'package:todoitico/widgets/mainButton.dart';
 
 class ManageTodoVw extends StatefulWidget {
@@ -142,19 +143,17 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
 
                     if (widget.todoToUpdate == null) {
                       // CREATE
-                      Provider.of<BaseDatabaseService>(context, listen: false).addTodo(newTodoData.toCompanion(true));
+                      Provider.of<BaseDatabaseService>(context, listen: false).addTodo(newTodoData);
                     } else {
                       // UPDATE
-                      Todo newVersion = widget.todoToUpdate.copyWith(
-                        creator: creatorCtl.text,
-                        content: contentCtl.text,
-                        title: titleCtl.text != ''
-                            ? titleCtl.text
-                            : contentCtl.text.substring(0, min(contentCtl.text.length, 15)) + '...',
-                        limitDate: date,
-                      );
+                      widget.todoToUpdate.creator = creatorCtl.text;
+                      widget.todoToUpdate.content = contentCtl.text;
+                      widget.todoToUpdate.title = titleCtl.text != ''
+                          ? titleCtl.text
+                          : contentCtl.text.substring(0, min(contentCtl.text.length, 15)) + '...';
+                      widget.todoToUpdate.limitDate = date;
 
-                      Provider.of<BaseDatabaseService>(context, listen: false).updateTodo(newVersion.toCompanion(true));
+                      Provider.of<BaseDatabaseService>(context, listen: false).updateTodo(widget.todoToUpdate);
                     }
                     Navigator.pop(context);
                   } catch (e) {

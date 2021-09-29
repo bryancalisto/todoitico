@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todoitico/models/todo.dart';
+import 'package:todoitico/services/theDatabaseSvc.dart';
 
 class ConfirmDeleteVw extends StatelessWidget {
   final int todoId;
@@ -21,7 +21,7 @@ class ConfirmDeleteVw extends StatelessWidget {
             child: Text('No')),
         TextButton(
           onPressed: () {
-            Provider.of<TheDatabaseService>(context, listen: false).deleteTodo(todoId);
+            Provider.of<BaseDatabaseService>(context, listen: false).deleteTodo(todoId);
             Navigator.pop(context);
           },
           child: Text('Sí'),

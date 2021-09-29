@@ -1,74 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todoitico/models/todo.dart';
+import 'package:todoitico/services/authSvc.dart';
+import 'package:todoitico/services/theDatabaseSvc.dart';
 import 'package:todoitico/views/listTodosVw.dart';
+import 'package:todoitico/views/loginVw.dart';
 import 'package:todoitico/widgets/theLoader.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
-  final TheDatabase db = TheDatabase();
-  runApp(TodoitoApp(TheDatabaseService(db)));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(TodoitoApp());
 }
 
 class TodoitoApp extends StatelessWidget {
-
-  final dbService;
-
-  const TodoitoApp(this.dbService);
-
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<BaseDatabaseService>.value(
-      value: dbService ,
-      builder: (context, app) {
-        return MaterialApp(
-          title: 'Todoito',
-          theme: ThemeData(
-            textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.greenAccent),
-            fontFamily: 'Merriweather',
-            inputDecorationTheme: InputDecorationTheme(
-              labelStyle: TextStyle(color: Colors.grey),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.greenAccent,
-                  width: 3,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.greenAccent,
-                  width: 2,
-                ),
-              ),
-            ),
-          ),
-          home: FutureBuilder(
-            future: Provider.of<BaseDatabaseService>(context).allTodoEntries,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                // print(snapshot.data[0]);
-                // Todo newTodo = Todo(
-                //   title: 'titulo2',
-                //   content: 'contENIdo testk',
-                //   created: DateTime.now(),
-                //   creator: 'Carla',
-                //   limitDate: DateTime.now().add(Duration(days:3)),
-                //   status: 'P'
-                // );
-                // Provider.of<TheDatabaseService>(context).addTodo(newTodo.toCompanion(true));
-                return ListTodosVw();
-              } else if (snapshot.hasError) {
-                return Scaffold(body: Text('Error: ${snapshot.error}'));
-              } else {
-                return TheLoader();
-              }
-            },
-          ),
-        );
+    return FutureBuilder(
+      future: Firebase.initializeApp(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return MultiProvider(
+              providers: [
+                ChangeNotifierProvider<BaseDatabaseService>(create: (_) => TheDatabaseService()),
+                Provider<BaseAuthService>(create: (_) => AuthService()),
+              ],
+              builder: (context, child) {
+                return MaterialApp(
+                  title: 'Todoito',
+                  theme: ThemeData(
+                    textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.greenAccent),
+                    fontFamily: 'Merriweather',
+                    inputDecorationTheme: InputDecorationTheme(
+                      labelStyle: TextStyle(color: Colors.grey),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.greenAccent,
+                          width: 3,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.greenAccent,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                  ),
+                  initialRoute: LoginVw.route,
+                  routes: {
+                    LoginVw.route: (context) => LoginVw(),
+                    ListTodosVw.route: (context) => ListTodosVw(),
+                  },
+                );
+              });
+        } else if (snapshot.hasError) {
+          return MaterialApp(home: Scaffold(body: Center(child: Text('ERROR: ${snapshot.error}'))));
+        } else {
+          return TheLoader();
+        }
       },
     );
   }
 }
-
-/*
-* TODO: Add below padding in todos list to allow floating button push and todo status toggle
-* */
