@@ -17,7 +17,7 @@ class TodoList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   Todo item = snapshot.data[0][index];
                   return TodoTile(
-                    key: Key(item.id.toString()),
+                    key: Key(item.id),
                     todo: item,
                     chkboxCallback: (newState) {
                       data.checkboxCallback(item.id);

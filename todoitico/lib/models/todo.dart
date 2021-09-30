@@ -1,5 +1,5 @@
 class Todo {
-  int id;
+  String id;
   String title;
   String content;
   String creator;
