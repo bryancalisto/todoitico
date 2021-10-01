@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class MainButton extends StatelessWidget {
-  final Function onPressed;
+  final VoidCallback onPressed;
   final String text;
-  final String size;
+  final String? size;
 
-  const MainButton({Key key, @required this.onPressed, @required this.text, this.size}) : super(key: key);
+  const MainButton({required Key key, required this.onPressed, required this.text, this.size}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

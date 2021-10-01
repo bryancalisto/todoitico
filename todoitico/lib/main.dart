@@ -15,7 +15,7 @@ void main() async {
 class TodoitoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return FutureBuilder<FirebaseApp>(
       future: Firebase.initializeApp(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
@@ -25,6 +25,7 @@ class TodoitoApp extends StatelessWidget {
                 Provider<BaseAuthService>(create: (_) => AuthService()),
               ],
               builder: (context, child) {
+                var todos = Provider.of<BaseDatabaseService>(context).allTodoEntries;
                 return MaterialApp(
                   title: 'Todoito',
                   theme: ThemeData(

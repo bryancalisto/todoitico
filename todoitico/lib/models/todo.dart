@@ -1,12 +1,39 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'todo.g.dart';
+
+@JsonSerializable()
 class Todo {
   String id;
   String title;
   String content;
   String creator;
   DateTime created;
-  DateTime limitDate;
-  DateTime modified;
+  DateTime? limitDate;
+  DateTime? modified;
   String status;
 
-  Todo({this.id, this.title, this.content, this.creator, this.created, this.limitDate, this.modified, this.status});
+  Todo({required this.id, required this.title, required this.content, required this.creator, required this.created, this.limitDate, this.modified,required this.status});
+
+  factory Todo.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);
+  Map<String, dynamic> toJson() => _$TodoToJson(this);
+
+  // Todo.fromJson(Map<String, dynamic> json)
+  //     :   id = json['id'],
+  // title=json['title'],
+  // content=json['content'],
+  // creator=json['creator'],
+  // created=json['created'],
+  // limitDate=json['limitDate'],
+  // modified=json['modified'],
+  // status=json['status'];
+  //
+  //
+  // Map<String, dynamic> toJson() => {
+  //   'name' : name,
+  //   'filling' : filling,
+  //   'topping' : topping,
+  //   'price' : price
+  // };
 }
+

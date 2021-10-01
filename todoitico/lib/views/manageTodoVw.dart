@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:uuid/uuid.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -9,7 +11,7 @@ import 'package:todoitico/services/theDatabaseSvc.dart';
 import 'package:todoitico/widgets/mainButton.dart';
 
 class ManageTodoVw extends StatefulWidget {
-  final Todo todoToUpdate;
+  final Todo? todoToUpdate;
 
   const ManageTodoVw({this.todoToUpdate}) : super();
 
@@ -22,17 +24,18 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
   final contentCtl = TextEditingController();
   final dateCtl = TextEditingController();
   final creatorCtl = TextEditingController();
-  DateTime date;
+  DateTime? date;
 
   @override
   void initState() {
     if (widget.todoToUpdate != null) {
-      titleCtl.text = widget.todoToUpdate.title;
-      contentCtl.text = widget.todoToUpdate.content;
-      creatorCtl.text = widget.todoToUpdate.creator;
-      dateCtl.text =
-          widget.todoToUpdate.limitDate != null ? DateFormat('yyyy-MM-dd').format(widget.todoToUpdate.limitDate) : '';
-      date = widget.todoToUpdate.limitDate;
+      titleCtl.text = widget.todoToUpdate!.title;
+      contentCtl.text = widget.todoToUpdate!.content;
+      creatorCtl.text = widget.todoToUpdate!.creator;
+      dateCtl.text = widget.todoToUpdate!.limitDate != null
+          ? DateFormat('yyyy-MM-dd').format(widget.todoToUpdate!.limitDate!)
+          : '';
+      date = widget.todoToUpdate!.limitDate!;
     }
     super.initState();
   }
@@ -76,7 +79,7 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
               TextField(
                 readOnly: true,
                 onTap: () async {
-                  DateTime pickedDate = await showDatePicker(
+                  DateTime? pickedDate = await showDatePicker(
                       builder: (context, datePicker) {
                         return Theme(
                           data: ThemeData.light().copyWith(
@@ -87,13 +90,12 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                               onSurface: Colors.black,
                             ),
                           ),
-                          child: datePicker,
+                          child: datePicker!,
                         );
                       },
                       context: context,
-                      initialDate: date ?? DateTime.now(),
+                      initialDate:  date??DateTime.now(),
                       firstDate: DateTime(2000),
-                      //DateTime.now() - not to allow to choose before today.
                       lastDate: DateTime(2101));
 
                   if (pickedDate != null) {
@@ -122,7 +124,10 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
               ),
               SizedBox(height: 20),
               MainButton(
+                text: 'Guardar',
+                key: Key('saveBtn'),
                 onPressed: () {
+                  Uuid uuid = Uuid();
                   titleCtl.text = titleCtl.text.trim();
                   contentCtl.text = contentCtl.text.trim();
                   creatorCtl.text = creatorCtl.text.trim();
@@ -130,9 +135,11 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
 
                   try {
                     Todo newTodoData = Todo(
-                      id: null,
+                      id: uuid.v4(),
                       status: 'P',
-                      creator: creatorCtl.text,
+                      creator: creatorCtl.text != ''
+                          ? creatorCtl.text
+                          : FirebaseAuth.instance.currentUser!.email ?? '',
                       created: DateTime.now(),
                       content: contentCtl.text,
                       title: titleCtl.text != ''
@@ -146,18 +153,18 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                       Provider.of<BaseDatabaseService>(context, listen: false).addTodo(newTodoData);
                     } else {
                       // UPDATE
-                      widget.todoToUpdate.creator = creatorCtl.text;
-                      widget.todoToUpdate.content = contentCtl.text;
-                      widget.todoToUpdate.title = titleCtl.text != ''
+                      widget.todoToUpdate!.creator = creatorCtl.text;
+                      widget.todoToUpdate!.content = contentCtl.text;
+                      widget.todoToUpdate!.title = titleCtl.text != ''
                           ? titleCtl.text
                           : contentCtl.text.substring(0, min(contentCtl.text.length, 15)) + '...';
-                      widget.todoToUpdate.limitDate = date;
+                      widget.todoToUpdate!.limitDate = date;
 
-                      Provider.of<BaseDatabaseService>(context, listen: false).updateTodo(widget.todoToUpdate);
+                      Provider.of<BaseDatabaseService>(context, listen: false).updateTodo(widget.todoToUpdate!);
                     }
                     Navigator.pop(context);
                   } catch (e) {
-                    print('ERROR creacion TODO: ' + e);
+                    print('ERROR creacion TODO: ' + e.toString());
                   }
                 },
               ),

@@ -5,10 +5,10 @@ import 'package:todoitico/views/confirmDeleteVw.dart';
 import 'package:todoitico/views/manageTodoVw.dart';
 
 class TodoTile extends StatelessWidget {
-  final Function chkboxCallback;
+  final void Function(bool?) chkboxCallback;
   final Todo todo;
 
-  const TodoTile({@required this.todo, @required this.chkboxCallback, Key key}) : super(key: key);
+  const TodoTile({required this.todo, required this.chkboxCallback, required Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class TodoTile extends StatelessWidget {
         key: key,
         padding: EdgeInsets.only(left: 10, top: 5, right: 10, bottom: 5),
         child: ListTile(
-          onTap:(){
+          onTap: () {
             showModalBottomSheet(
               isScrollControlled: true,
               context: context,
@@ -35,10 +35,8 @@ class TodoTile extends StatelessWidget {
                 ),
               ),
             );
-          } ,
-          title: Text(
-            todo.title,
-          ),
+          },
+          title: Text(todo.title),
           trailing: Checkbox(
             activeColor: Colors.greenAccent,
             checkColor: Colors.black,

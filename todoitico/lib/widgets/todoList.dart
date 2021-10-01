@@ -15,7 +15,7 @@ class TodoList extends StatelessWidget {
             if (snapshot.hasData) {
               return ListView.builder(
                 itemBuilder: (context, index) {
-                  Todo item = snapshot.data[0][index];
+                  Todo item = (snapshot.data as List)[0][index];
                   return TodoTile(
                     key: Key(item.id),
                     todo: item,
@@ -24,7 +24,7 @@ class TodoList extends StatelessWidget {
                     },
                   );
                 },
-                itemCount: snapshot.data[1],
+                itemCount: (snapshot.data as List)[1],
               );
             } else {
               return CircularProgressIndicator();

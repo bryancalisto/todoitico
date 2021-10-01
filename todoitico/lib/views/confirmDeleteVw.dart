@@ -6,7 +6,7 @@ import 'package:todoitico/services/theDatabaseSvc.dart';
 class ConfirmDeleteVw extends StatelessWidget {
   final String todoId;
 
-  const ConfirmDeleteVw({@required this.todoId}) : super();
+  const ConfirmDeleteVw({required this.todoId}) : super();
 
   @override
   Widget build(BuildContext context) {

@@ -8,7 +8,7 @@ abstract class BaseAuthService {
 
 class AuthService implements BaseAuthService {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-  User _user;
+  User? _user;
 
   get user => _user;
 
