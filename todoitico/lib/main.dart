@@ -25,7 +25,6 @@ class TodoitoApp extends StatelessWidget {
                 Provider<BaseAuthService>(create: (_) => AuthService()),
               ],
               builder: (context, child) {
-                var todos = Provider.of<BaseDatabaseService>(context).allTodoEntries;
                 return MaterialApp(
                   title: 'Todoito',
                   theme: ThemeData(

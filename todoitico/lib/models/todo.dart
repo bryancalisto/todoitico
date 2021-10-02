@@ -17,23 +17,5 @@ class Todo {
 
   factory Todo.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);
   Map<String, dynamic> toJson() => _$TodoToJson(this);
-
-  // Todo.fromJson(Map<String, dynamic> json)
-  //     :   id = json['id'],
-  // title=json['title'],
-  // content=json['content'],
-  // creator=json['creator'],
-  // created=json['created'],
-  // limitDate=json['limitDate'],
-  // modified=json['modified'],
-  // status=json['status'];
-  //
-  //
-  // Map<String, dynamic> toJson() => {
-  //   'name' : name,
-  //   'filling' : filling,
-  //   'topping' : topping,
-  //   'price' : price
-  // };
 }
 

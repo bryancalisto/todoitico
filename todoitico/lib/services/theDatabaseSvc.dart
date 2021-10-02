@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:todoitico/models/todo.dart';
@@ -9,17 +8,18 @@ abstract class BaseDatabaseService implements ChangeNotifier {
 
   Future<int> getTodoCount(bool pendingOnly);
 
-  Future<bool> addTodo(Todo entry);
+  Future<bool> addTodo(Todo todo);
 
-  Future<bool> updateTodo(Todo entry);
+  Future<bool> updateTodo(Todo todo);
 
   Future<bool> deleteTodo(String id);
 
-  Future<void> checkboxCallback(String id);
+  Future<void> checkboxCallback(Todo todo);
 }
 
 class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
-  final DatabaseReference _dbRef = FirebaseDatabase.instance.reference();
+  final DatabaseReference _dbRef=FirebaseDatabase.instance.reference().child(FirebaseAuth.instance.currentUser!.uid);
+
   List<Todo> todos = [
     Todo(
         title: 'title',
@@ -32,11 +32,6 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
         modified: DateTime.now())
   ];
 
-  // TheDatabaseService(){
-  //      // addTodo(todos[0]);
-  //   allTodoEntries;
-  // }
-
   @override
   void dispose() {
     super.dispose();
@@ -48,7 +43,9 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     Map<dynamic, dynamic> values = receivedTodos.value;
 
     values.forEach((key, values) {
-      todos.add(Todo.fromJson(new Map<String, dynamic>.from(values)));
+      Todo todo= Todo.fromJson(new Map<String, dynamic>.from(values));
+      todo.id = key;
+      todos.add(todo);
     });
 
     return todos;
@@ -68,9 +65,9 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     return count;
   }
 
-  Future<bool> addTodo(Todo entry) async {
+  Future<bool> addTodo(Todo todo) async {
     try {
-      _dbRef.child('todos').push().set(entry.toJson());
+      _dbRef.child('todos').push().set(todo.toJson());
       notifyListeners();
       return true;
     } catch (e) {
@@ -79,9 +76,9 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     }
   }
 
-  Future<bool> updateTodo(Todo entry) async {
+  Future<bool> updateTodo(Todo todo) async {
     try {
-      var receivedTodos = await _dbRef.child('todos').get();
+       await _dbRef.child('todos').child(todo.id).update(todo.toJson());
       notifyListeners();
       return true;
     } catch (e) {
@@ -92,7 +89,7 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
 
   Future<bool> deleteTodo(String id) async {
     try {
-      print('deleteTodo');
+      await _dbRef.child('todos').child(id).remove();
       notifyListeners();
       return true;
     } catch (e) {
@@ -101,9 +98,9 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     }
   }
 
-  Future<void> checkboxCallback(String id) async {
+  Future<void> checkboxCallback(Todo todo) async {
     try {
-      print('checkboxCallback');
+      await _dbRef.child('todos').child(todo.id).update({'status': todo.status == 'P'? 'C': 'P'});
       notifyListeners();
     } catch (e) {
       print('Error checkboxCallback: ' + e.toString());

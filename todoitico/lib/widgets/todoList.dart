@@ -20,7 +20,7 @@ class TodoList extends StatelessWidget {
                     key: Key(item.id),
                     todo: item,
                     chkboxCallback: (newState) {
-                      data.checkboxCallback(item.id);
+                      data.checkboxCallback(item);
                     },
                   );
                 },

@@ -35,7 +35,7 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
       dateCtl.text = widget.todoToUpdate!.limitDate != null
           ? DateFormat('yyyy-MM-dd').format(widget.todoToUpdate!.limitDate!)
           : '';
-      date = widget.todoToUpdate!.limitDate!;
+      date = widget.todoToUpdate!.limitDate;
     }
     super.initState();
   }
