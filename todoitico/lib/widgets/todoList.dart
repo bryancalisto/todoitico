@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
 import 'package:todoitico/services/theDatabaseSvc.dart';
+import 'package:todoitico/widgets/theLoader.dart';
 import 'package:todoitico/widgets/todoTile.dart';
 
 class TodoList extends StatelessWidget {
@@ -27,7 +28,7 @@ class TodoList extends StatelessWidget {
                 itemCount: (snapshot.data as List)[1],
               );
             } else {
-              return CircularProgressIndicator();
+              return TheLoader();
             }
           },
         );
