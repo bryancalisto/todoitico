@@ -18,19 +18,7 @@ abstract class BaseDatabaseService implements ChangeNotifier {
 }
 
 class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
-  final DatabaseReference _dbRef=FirebaseDatabase.instance.reference().child(FirebaseAuth.instance.currentUser!.uid);
-
-  List<Todo> todos = [
-    Todo(
-        title: 'title',
-        id: 'id',
-        limitDate: DateTime.now(),
-        created: DateTime.now(),
-        content: 'content',
-        creator: 'creator',
-        status: 'P',
-        modified: DateTime.now())
-  ];
+  final DatabaseReference _dbRef = FirebaseDatabase.instance.reference().child(FirebaseAuth.instance.currentUser!.uid);
 
   @override
   void dispose() {
@@ -43,7 +31,7 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     Map<dynamic, dynamic> values = receivedTodos.value;
 
     values.forEach((key, values) {
-      Todo todo= Todo.fromJson(new Map<String, dynamic>.from(values));
+      Todo todo = Todo.fromJson(new Map<String, dynamic>.from(values));
       todo.id = key;
       todos.add(todo);
     });
@@ -78,7 +66,7 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
 
   Future<bool> updateTodo(Todo todo) async {
     try {
-       await _dbRef.child('todos').child(todo.id).update(todo.toJson());
+      await _dbRef.child('todos').child(todo.id).update(todo.toJson());
       notifyListeners();
       return true;
     } catch (e) {
@@ -100,7 +88,7 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
 
   Future<void> checkboxCallback(Todo todo) async {
     try {
-      await _dbRef.child('todos').child(todo.id).update({'status': todo.status == 'P'? 'C': 'P'});
+      await _dbRef.child('todos').child(todo.id).update({'status': todo.status == 'P' ? 'C' : 'P'});
       notifyListeners();
     } catch (e) {
       print('Error checkboxCallback: ' + e.toString());

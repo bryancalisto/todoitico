@@ -4,6 +4,7 @@ import 'package:todoitico/services/authSvc.dart';
 import 'package:todoitico/services/theDatabaseSvc.dart';
 import 'package:todoitico/views/listTodosVw.dart';
 import 'package:todoitico/views/loginVw.dart';
+import 'package:todoitico/views/welcomeVw.dart';
 import 'package:todoitico/widgets/theLoader.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -46,10 +47,11 @@ class TodoitoApp extends StatelessWidget {
                       ),
                     ),
                   ),
-                  initialRoute: LoginVw.route,
+                  initialRoute: WelcomeVw.route,
                   routes: {
                     LoginVw.route: (context) => LoginVw(),
                     ListTodosVw.route: (context) => ListTodosVw(),
+                    WelcomeVw.route: (context) => WelcomeVw(),
                   },
                 );
               });

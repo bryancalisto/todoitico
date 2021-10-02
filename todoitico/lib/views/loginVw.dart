@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/services/authSvc.dart';
 import 'package:todoitico/views/listTodosVw.dart';
@@ -17,13 +16,6 @@ class _LoginVwState extends State {
   final userCtl = TextEditingController();
   final passwdCtl = TextEditingController();
   bool showError = false;
-
-  // @override
-  // void initState() {
-  //   userCtl.text = "bryancalisto@yahoo.es";
-  //   passwdCtl.text = "clave12345678";
-  //   super.initState();
-  // }
 
   List<Widget> showErrorWidget() {
     if (showError) {
