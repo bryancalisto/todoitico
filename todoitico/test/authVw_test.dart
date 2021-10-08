@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
 import 'package:todoitico/services/authSvc.dart';
 import 'package:todoitico/services/theDatabaseSvc.dart';
-import 'package:todoitico/views/listTodosVw.dart';
+import 'package:todoitico/views/listTodos/ListTodosVw.dart';
 import 'package:todoitico/views/loginVw.dart';
 
 class MockAuthService extends Mock implements BaseAuthService {}
@@ -88,7 +88,7 @@ void main() {
   testWidgets('Should be redirected to ListTodosVw if login was successful', (WidgetTester tester) async {
     // ARRANGE
     when(() => mockAuthService.login(any(that: isNotEmpty), any(that: isNotEmpty))).thenAnswer((_) async => true);
-    when(() => mockTheDatabaseService.allTodoEntries).thenAnswer((_) async => Future.value(todos));
+    when(() => mockTheDatabaseService.getLongTermTodos()).thenAnswer((_) async => Future.value(todos));
     when(() => mockTheDatabaseService.getTodoCount(any())).thenAnswer((_) async => Future.value(todos.length));
     // ACT
     await tester.runAsync(() async {

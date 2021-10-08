@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/services/authSvc.dart';
 import 'package:todoitico/services/theDatabaseSvc.dart';
-import 'package:todoitico/views/listTodosVw.dart';
+import 'package:todoitico/views/listTodos/ListTodosVw.dart';
+import 'views/listTodos/listLongTermVw.dart';
 import 'package:todoitico/views/loginVw.dart';
 import 'package:todoitico/views/welcomeVw.dart';
 import 'package:todoitico/widgets/theLoader.dart';
@@ -27,8 +28,22 @@ class TodoitoApp extends StatelessWidget {
               ],
               builder: (context, child) {
                 return MaterialApp(
-                  title: 'Todoito',
                   theme: ThemeData(
+                    colorScheme: ColorScheme(
+                      primaryVariant: Colors.green,
+                      secondaryVariant: Colors.white,
+                      secondary: Colors.greenAccent,
+                      surface: Colors.white,
+                      background: Colors.white,
+                      onSurface: Colors.black,
+                      onError: Colors.redAccent,
+                      brightness: Brightness.light,
+                      onBackground: Colors.white,
+                      error: Colors.grey,
+                      primary: Colors.white,
+                      onSecondary: Colors.greenAccent,
+                      onPrimary: Colors.white,
+                    ),
                     textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.greenAccent),
                     fontFamily: 'Merriweather',
                     inputDecorationTheme: InputDecorationTheme(
@@ -56,7 +71,12 @@ class TodoitoApp extends StatelessWidget {
                 );
               });
         } else if (snapshot.hasError) {
-          return MaterialApp(home: Scaffold(body: Center(child: Text('ERROR main: ${snapshot.error}', ))));
+          return MaterialApp(
+              home: Scaffold(
+                  body: Center(
+                      child: Text(
+            'ERROR main: ${snapshot.error}',
+          ))));
         } else {
           return TheLoader();
         }

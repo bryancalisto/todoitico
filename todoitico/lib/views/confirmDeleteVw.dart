@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todoitico/models/todo.dart';
 import 'package:todoitico/services/theDatabaseSvc.dart';
 
 class ConfirmDeleteVw extends StatelessWidget {
-  final String todoId;
+  final Todo todo;
+  final TodoType todoType;
 
-  const ConfirmDeleteVw({required this.todoId}) : super();
+  const ConfirmDeleteVw({required this.todo,required this.todoType}) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class ConfirmDeleteVw extends StatelessWidget {
             child: Text('No')),
         TextButton(
           onPressed: () {
-            Provider.of<BaseDatabaseService>(context, listen: false).deleteTodo(todoId);
+            Provider.of<BaseDatabaseService>(context, listen: false).deleteTodo(todo,todoType);
             Navigator.pop(context);
           },
           child: Text('Sí'),

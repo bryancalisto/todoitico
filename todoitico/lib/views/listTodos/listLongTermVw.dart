@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todoitico/models/todo.dart';
 import 'package:todoitico/services/theDatabaseSvc.dart';
 import 'package:todoitico/views/manageTodoVw.dart';
 import 'package:todoitico/widgets/theLoader.dart';
-import 'package:todoitico/widgets/todoList.dart';
+import 'package:todoitico/widgets/todoTile.dart';
 
-class ListTodosVw extends StatelessWidget {
-  static const String route = 'ListTodosVw';
-
+class ListLongTermVw extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +24,9 @@ class ListTodosVw extends StatelessWidget {
             builder: (context) => SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: ManageTodoVw(),
+                child: ManageTodoVw(
+                  todoType: TodoType.longTerm,
+                ),
               ),
             ),
           );
@@ -37,7 +38,7 @@ class ListTodosVw extends StatelessWidget {
         ),
       ),
       body: FutureBuilder(
-        future: Provider.of<BaseDatabaseService>(context).getTodoCount(true),
+        future: Provider.of<BaseDatabaseService>(context).getLongTermTodos(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(
@@ -52,7 +53,8 @@ class ListTodosVw extends StatelessWidget {
                     ),
                     SizedBox(width: 5),
                     Text(
-                      'Pendientes: ${snapshot.data}',
+                      // 'Pendientes: ${snapshot.data}',
+                      'Pendientes: ${(snapshot.data as List<Todo>).length}',
                       style: TextStyle(fontSize: 22),
                     ),
                   ]),
@@ -67,7 +69,21 @@ class ListTodosVw extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                     ),
-                    child: TodoList(),
+                    // child: LongTermTodoList(todos: snapshot.data as List<Todo>),
+                    child: ListView(
+                      children: (snapshot.data as List<Todo>)
+                          .map(
+                            (item) => TodoTile(
+                              key: Key(item.id),
+                              todo: item,
+                              chkboxCallback: (newState) {
+                                Provider.of<BaseDatabaseService>(context, listen: false).checkboxCallback(item, TodoType.longTerm);
+                              },
+                              todoType: TodoType.longTerm,
+                            ),
+                          )
+                          .toList(),
+                    ),
                   ),
                 )
               ],

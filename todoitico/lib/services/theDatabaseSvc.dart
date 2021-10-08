@@ -3,18 +3,25 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:todoitico/models/todo.dart';
 
+enum TodoType {
+  longTerm,
+  daily,
+}
+
 abstract class BaseDatabaseService implements ChangeNotifier {
-  Future<List<Todo>> get allTodoEntries;
+  Future<List<Todo>> getLongTermTodos();
+
+  Future<Map<String, List<Todo>>> getDailyTodos();
 
   Future<int> getTodoCount(bool pendingOnly);
 
-  Future<bool> addTodo(Todo todo);
+  Future<bool> addTodo(Todo todo, TodoType type);
 
-  Future<bool> updateTodo(Todo todo);
+  Future<bool> updateTodo(Todo todo, TodoType todoType);
 
-  Future<bool> deleteTodo(String id);
+  Future<bool> deleteTodo(Todo todo, TodoType todoType);
 
-  Future<void> checkboxCallback(Todo todo);
+  Future<void> checkboxCallback(Todo todo, TodoType todoType);
 }
 
 class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
@@ -25,11 +32,24 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     super.dispose();
   }
 
-  Future<List<Todo>> get allTodoEntries async {
-    List<Todo> todos = [];
+  DatabaseReference createTodoRef(TodoType type) {
+    DatabaseReference ref = _dbRef.child('todos');
 
-    try{
-      var receivedTodos = await _dbRef.child('todos').get();
+    if (type == TodoType.longTerm) {
+      ref = ref.child('longTerm');
+    } else {
+      ref = ref.child('daily');
+    }
+
+    return ref;
+  }
+
+  Future<List<Todo>> getLongTermTodos() async {
+    List<Todo> todos = [];
+    DatabaseReference ref = createTodoRef(TodoType.longTerm);
+
+    try {
+      var receivedTodos = await ref.get();
       Map<dynamic, dynamic> values = receivedTodos.value;
 
       values.forEach((key, values) {
@@ -37,37 +57,63 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
         todo.id = key;
         todos.add(todo);
       });
-    }
-    catch(e){
-      print('Error allTodoEntries: ' + e.toString());
+    } catch (e) {
+      print('Error getLongTermTodos: ' + e.toString());
     }
 
     return todos;
   }
 
+  Future<Map<String, List<Todo>>> getDailyTodos() async {
+    List<Todo> todos = [];
+    DatabaseReference ref = createTodoRef(TodoType.daily);
+
+    try {
+      var receivedTodos = await ref.get();
+      Map<dynamic, dynamic> values = receivedTodos.value;
+
+      values.forEach((key, values) {
+        Todo todo = Todo.fromJson(new Map<String, dynamic>.from(values));
+        todo.id = key;
+        todos.add(todo);
+      });
+    } catch (e) {
+      print('Error getDailyTodos: ' + e.toString());
+    }
+
+    return {};
+  }
+
   Future<int> getTodoCount(bool pendingOnly) async {
     int count = 0;
 
-    try{
+    try {
       var receivedTodos = await _dbRef.child('todos').get();
       Map<dynamic, dynamic> values = receivedTodos.value;
 
       values.forEach((key, values) {
-        if ((Todo.fromJson(new Map<String, dynamic>.from(values)).status == 'P' && pendingOnly) || !pendingOnly) {
+        if ((Todo
+            .fromJson(new Map<String, dynamic>.from(values))
+            .status == 'P' && pendingOnly) || !pendingOnly) {
           count++;
         }
       });
-    }
-    catch(e){
+    } catch (e) {
       print('Error getTodoCount: ' + e.toString());
     }
 
     return count;
   }
 
-  Future<bool> addTodo(Todo todo) async {
+  Future<bool> addTodo(Todo todo, TodoType type) async {
+    DatabaseReference ref = createTodoRef(type);
+
+    if (type == TodoType.daily) {
+      ref = ref.child(DateTime.now().toString());
+    }
+
     try {
-      _dbRef.child('todos').push().set(todo.toJson());
+      ref.push().set(todo.toJson());
       notifyListeners();
       return true;
     } catch (e) {
@@ -76,7 +122,13 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     }
   }
 
-  Future<bool> updateTodo(Todo todo) async {
+  Future<bool> updateTodo(Todo todo, TodoType type) async {
+    DatabaseReference ref = createTodoRef(type);
+
+    if (type == TodoType.daily) {
+      ref = ref.child(todo.created.toIso8601String());
+    }
+
     try {
       await _dbRef.child('todos').child(todo.id).update(todo.toJson());
       notifyListeners();
@@ -87,9 +139,15 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     }
   }
 
-  Future<bool> deleteTodo(String id) async {
+  Future<bool> deleteTodo(Todo todo, TodoType type) async {
+    DatabaseReference ref = createTodoRef(type);
+
+    if (type == TodoType.daily) {
+      ref = ref.child(todo.created.toIso8601String());
+    }
+
     try {
-      await _dbRef.child('todos').child(id).remove();
+      await _dbRef.child('todos').child(todo.id).remove();
       notifyListeners();
       return true;
     } catch (e) {
@@ -98,9 +156,15 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     }
   }
 
-  Future<void> checkboxCallback(Todo todo) async {
+  Future<void> checkboxCallback(Todo todo, TodoType type) async {
+    DatabaseReference ref = createTodoRef(type);
+
+    if (type == TodoType.daily) {
+      ref = ref.child(todo.created.toIso8601String());
+    }
+
     try {
-      await _dbRef.child('todos').child(todo.id).update({'status': todo.status == 'P' ? 'C' : 'P'});
+      await ref.child(todo.id).update({'status': todo.status == 'P' ? 'C' : 'P'});
       notifyListeners();
     } catch (e) {
       print('Error checkboxCallback: ' + e.toString());

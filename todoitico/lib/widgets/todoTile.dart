@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todoitico/models/todo.dart';
+import 'package:todoitico/services/theDatabaseSvc.dart';
 import 'package:todoitico/views/confirmDeleteVw.dart';
 import 'package:todoitico/views/manageTodoVw.dart';
 
 class TodoTile extends StatelessWidget {
   final void Function(bool?) chkboxCallback;
   final Todo todo;
+  final TodoType todoType;
 
-  const TodoTile({required this.todo, required this.chkboxCallback, required Key key}) : super(key: key);
+  const TodoTile({required this.todo, required this.chkboxCallback, required Key key,required this.todoType}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class TodoTile extends StatelessWidget {
         showDialog(
             context: context,
             builder: (context) {
-              return ConfirmDeleteVw(todoId: todo.id);
+              return ConfirmDeleteVw(todo: todo, todoType: todoType);
             });
       },
       child: Container(
@@ -31,7 +33,7 @@ class TodoTile extends StatelessWidget {
               builder: (context) => SingleChildScrollView(
                 child: Container(
                   padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                  child: ManageTodoVw(todoToUpdate: todo),
+                  child: ManageTodoVw(todoToUpdate: todo, todoType: todoType),
                 ),
               ),
             );

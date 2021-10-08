@@ -9,8 +9,9 @@ import 'package:todoitico/widgets/mainButton.dart';
 
 class ManageTodoVw extends StatefulWidget {
   final Todo? todoToUpdate;
+  final TodoType todoType;
 
-  const ManageTodoVw({this.todoToUpdate}) : super();
+  const ManageTodoVw({this.todoToUpdate,required this.todoType}) : super();
 
   @override
   _ManageTodoVwState createState() => _ManageTodoVwState();
@@ -59,7 +60,8 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                   labelText: 'Contenido',
                 ),
               ),
-              SizedBox(height: 20),
+              if(widget.todoType == TodoType.longTerm)
+              ...[SizedBox(height: 20),
               TextField(
                 readOnly: true,
                 onTap: () async {
@@ -96,7 +98,8 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                 decoration: InputDecoration(
                   labelText: 'Fecha límite',
                 ),
-              ),
+              )]
+              else ...[],
               SizedBox(height: 20),
               MainButton(
                 text: 'Guardar',
@@ -117,13 +120,13 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
 
                     if (widget.todoToUpdate == null) {
                       // CREATE
-                      Provider.of<BaseDatabaseService>(context, listen: false).addTodo(newTodoData);
+                      Provider.of<BaseDatabaseService>(context, listen: false).addTodo(newTodoData, widget.todoType);
                     } else {
                       // UPDATE
                       widget.todoToUpdate!.content = contentCtl.text;
                       widget.todoToUpdate!.limitDate = date;
 
-                      Provider.of<BaseDatabaseService>(context, listen: false).updateTodo(widget.todoToUpdate!);
+                      Provider.of<BaseDatabaseService>(context, listen: false).updateTodo(widget.todoToUpdate!, widget.todoType);
                     }
                     Navigator.pop(context);
                   } catch (e) {
