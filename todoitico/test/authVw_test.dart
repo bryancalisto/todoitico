@@ -19,14 +19,11 @@ void main() {
 
   List<Todo> todos = [
     Todo(
-        title: 'title',
         id: 'id',
         limitDate: DateTime.now(),
         created: DateTime.now(),
         content: 'content',
-        creator: 'creator',
-        status: 'P',
-        modified: DateTime.now())
+        status: 'P')
   ];
 
   Widget makeTestableWidget({required Widget child}) => MultiProvider(

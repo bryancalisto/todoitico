@@ -36,7 +36,7 @@ class TodoTile extends StatelessWidget {
               ),
             );
           },
-          title: Text(todo.title),
+          title: Text(todo.content),
           trailing: Checkbox(
             activeColor: Colors.greenAccent,
             checkColor: Colors.black,
