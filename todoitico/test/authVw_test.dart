@@ -89,7 +89,6 @@ void main() {
     // ARRANGE
     when(() => mockAuthService.login(any(that: isNotEmpty), any(that: isNotEmpty))).thenAnswer((_) async => true);
     when(() => mockTheDatabaseService.getLongTermTodos()).thenAnswer((_) async => Future.value(todos));
-    when(() => mockTheDatabaseService.getTodoCount(any())).thenAnswer((_) async => Future.value(todos.length));
     // ACT
     await tester.runAsync(() async {
       await tester.pumpWidget(makeTestableWidget(child: LoginVw()));

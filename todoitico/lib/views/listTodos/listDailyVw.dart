@@ -36,7 +36,7 @@ class ListDailyVw extends StatelessWidget {
         ),
       ),
       body: FutureBuilder(
-        future: Provider.of<BaseDatabaseService>(context).getTodoCount(true),
+        future: Provider.of<BaseDatabaseService>(context).getLongTermTodos(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(

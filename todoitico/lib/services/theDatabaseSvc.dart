@@ -13,7 +13,6 @@ abstract class BaseDatabaseService implements ChangeNotifier {
 
   Future<Map<String, List<Todo>>> getDailyTodos();
 
-  Future<int> getTodoCount(bool pendingOnly);
 
   Future<bool> addTodo(Todo todo, TodoType type);
 
@@ -82,27 +81,6 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     }
 
     return {};
-  }
-
-  Future<int> getTodoCount(bool pendingOnly) async {
-    int count = 0;
-
-    try {
-      var receivedTodos = await _dbRef.child('todos').get();
-      Map<dynamic, dynamic> values = receivedTodos.value;
-
-      values.forEach((key, values) {
-        if ((Todo
-            .fromJson(new Map<String, dynamic>.from(values))
-            .status == 'P' && pendingOnly) || !pendingOnly) {
-          count++;
-        }
-      });
-    } catch (e) {
-      print('Error getTodoCount: ' + e.toString());
-    }
-
-    return count;
   }
 
   Future<bool> addTodo(Todo todo, TodoType type) async {
