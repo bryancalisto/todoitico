@@ -56,7 +56,7 @@ class TodoitoApp extends StatelessWidget {
                 );
               });
         } else if (snapshot.hasError) {
-          return MaterialApp(home: Scaffold(body: Center(child: Text('ERROR: ${snapshot.error}'))));
+          return MaterialApp(home: Scaffold(body: Center(child: Text('ERROR main: ${snapshot.error}', ))));
         } else {
           return TheLoader();
         }

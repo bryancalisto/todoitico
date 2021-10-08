@@ -45,18 +45,17 @@ class ListTodosVw extends StatelessWidget {
               children: [
                 Container(
                   padding: EdgeInsets.only(left: 10, top: 20, right: 10, bottom: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.all_inclusive,
-                        size: 23,
-                      ),
-                      SizedBox(width: 5),
-                      Text('Pendientes: ${snapshot.data}', style: TextStyle(fontSize: 22)),
-                    ],
-                  ),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
+                    Icon(
+                      Icons.all_inclusive,
+                      size: 23,
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      'Pendientes: ${snapshot.data}',
+                      style: TextStyle(fontSize: 22),
+                    ),
+                  ]),
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(color: Colors.black, width: 4),
@@ -73,6 +72,11 @@ class ListTodosVw extends StatelessWidget {
                 )
               ],
             );
+          } else if (snapshot.hasError) {
+            if (snapshot.error.toString() == "PlatformException(get-failed, Client is offline, null, null)") {
+              return Center(child: Text('Se requiere acceso a Internet'));
+            }
+            return Center(child: Text('Error listTodosVw: ${snapshot.error.toString()}'));
           } else {
             return Center(child: TheLoader());
           }

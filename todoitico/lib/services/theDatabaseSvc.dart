@@ -27,28 +27,40 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
 
   Future<List<Todo>> get allTodoEntries async {
     List<Todo> todos = [];
-    var receivedTodos = await _dbRef.child('todos').get();
-    Map<dynamic, dynamic> values = receivedTodos.value;
 
-    values.forEach((key, values) {
-      Todo todo = Todo.fromJson(new Map<String, dynamic>.from(values));
-      todo.id = key;
-      todos.add(todo);
-    });
+    try{
+      var receivedTodos = await _dbRef.child('todos').get();
+      Map<dynamic, dynamic> values = receivedTodos.value;
+
+      values.forEach((key, values) {
+        Todo todo = Todo.fromJson(new Map<String, dynamic>.from(values));
+        todo.id = key;
+        todos.add(todo);
+      });
+    }
+    catch(e){
+      print('Error allTodoEntries: ' + e.toString());
+    }
 
     return todos;
   }
 
   Future<int> getTodoCount(bool pendingOnly) async {
     int count = 0;
-    var receivedTodos = await _dbRef.child('todos').get();
-    Map<dynamic, dynamic> values = receivedTodos.value;
 
-    values.forEach((key, values) {
-      if ((Todo.fromJson(new Map<String, dynamic>.from(values)).status == 'P' && pendingOnly) || !pendingOnly) {
-        count++;
-      }
-    });
+    try{
+      var receivedTodos = await _dbRef.child('todos').get();
+      Map<dynamic, dynamic> values = receivedTodos.value;
+
+      values.forEach((key, values) {
+        if ((Todo.fromJson(new Map<String, dynamic>.from(values)).status == 'P' && pendingOnly) || !pendingOnly) {
+          count++;
+        }
+      });
+    }
+    catch(e){
+      print('Error getTodoCount: ' + e.toString());
+    }
 
     return count;
   }

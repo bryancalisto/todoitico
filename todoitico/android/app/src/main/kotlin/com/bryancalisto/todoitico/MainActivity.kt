@@ -1,4 +1,4 @@
-package com.example.todoitico
+package com.bryancalisto.todoitico
 
 import io.flutter.embedding.android.FlutterActivity
 
