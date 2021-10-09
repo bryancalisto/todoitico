@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import 'package:todoitico/models/todo.dart';
 
 enum TodoType {
@@ -11,8 +12,7 @@ enum TodoType {
 abstract class BaseDatabaseService implements ChangeNotifier {
   Future<List<Todo>> getLongTermTodos();
 
-  Future<Map<String, List<Todo>>> getDailyTodos();
-
+  Future<List<Todo>> getDailyTodos(DateTime date);
 
   Future<bool> addTodo(Todo todo, TodoType type);
 
@@ -43,12 +43,21 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     return ref;
   }
 
+  String createDateKey(DateTime date){
+    return DateFormat('yyyyMMdd').format(date);
+  }
+
   Future<List<Todo>> getLongTermTodos() async {
     List<Todo> todos = [];
     DatabaseReference ref = createTodoRef(TodoType.longTerm);
 
     try {
       var receivedTodos = await ref.get();
+
+      if(receivedTodos.value == null){
+        return todos;
+      }
+
       Map<dynamic, dynamic> values = receivedTodos.value;
 
       values.forEach((key, values) {
@@ -63,12 +72,17 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     return todos;
   }
 
-  Future<Map<String, List<Todo>>> getDailyTodos() async {
-    List<Todo> todos = [];
+  Future< List<Todo>> getDailyTodos(DateTime date) async {
+     List<Todo> todos=[];
     DatabaseReference ref = createTodoRef(TodoType.daily);
 
     try {
-      var receivedTodos = await ref.get();
+      var receivedTodos = await ref.child(createDateKey(date)).get();
+
+      if(receivedTodos.value == null){
+        return todos;
+      }
+
       Map<dynamic, dynamic> values = receivedTodos.value;
 
       values.forEach((key, values) {
@@ -80,14 +94,15 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
       print('Error getDailyTodos: ' + e.toString());
     }
 
-    return {};
+    return todos;
   }
 
   Future<bool> addTodo(Todo todo, TodoType type) async {
     DatabaseReference ref = createTodoRef(type);
 
+    // Database key is the todo creation day
     if (type == TodoType.daily) {
-      ref = ref.child(DateTime.now().toString());
+      ref = ref.child(createDateKey(todo.created));
     }
 
     try {
@@ -104,11 +119,11 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     DatabaseReference ref = createTodoRef(type);
 
     if (type == TodoType.daily) {
-      ref = ref.child(todo.created.toIso8601String());
+      ref = ref.child(createDateKey(todo.created));
     }
 
     try {
-      await _dbRef.child('todos').child(todo.id).update(todo.toJson());
+      await ref.child(todo.id).update(todo.toJson());
       notifyListeners();
       return true;
     } catch (e) {
@@ -121,11 +136,11 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     DatabaseReference ref = createTodoRef(type);
 
     if (type == TodoType.daily) {
-      ref = ref.child(todo.created.toIso8601String());
+      ref = ref.child(createDateKey(todo.created));
     }
 
     try {
-      await _dbRef.child('todos').child(todo.id).remove();
+      await ref.child(todo.id).remove();
       notifyListeners();
       return true;
     } catch (e) {
@@ -138,7 +153,7 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     DatabaseReference ref = createTodoRef(type);
 
     if (type == TodoType.daily) {
-      ref = ref.child(todo.created.toIso8601String());
+      ref = ref.child(createDateKey(todo.created));
     }
 
     try {

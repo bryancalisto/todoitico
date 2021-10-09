@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/services/authSvc.dart';
 import 'package:todoitico/views/listTodos/ListTodosVw.dart';
-import 'listTodos/listLongTermVw.dart';
 import 'package:todoitico/widgets/mainButton.dart';
 
 class LoginVw extends StatefulWidget {

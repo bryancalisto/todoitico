@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todoitico/views/loginVw.dart';
 
 class ExitVw extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Container(
+      color: Colors.white,
       child: TextButton(
         onPressed: () async{
           await FirebaseAuth.instance.signOut();

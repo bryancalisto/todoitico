@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
@@ -48,13 +47,12 @@ class ListLongTermVw extends StatelessWidget {
                   padding: EdgeInsets.only(left: 10, top: 20, right: 10, bottom: 20),
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
                     Icon(
-                      Icons.all_inclusive,
-                      size: 23,
+                      Icons.android_rounded,
+                      size: 21,
                     ),
                     SizedBox(width: 5),
                     Text(
-                      // 'Pendientes: ${snapshot.data}',
-                      'Pendientes: ${(snapshot.data as List<Todo>).length}',
+                      'Pendientes: ${(snapshot.data as List<Todo>).where((t) => t.status == 'P').length}',
                       style: TextStyle(fontSize: 22),
                     ),
                   ]),
@@ -77,7 +75,8 @@ class ListLongTermVw extends StatelessWidget {
                               key: Key(item.id),
                               todo: item,
                               chkboxCallback: (newState) {
-                                Provider.of<BaseDatabaseService>(context, listen: false).checkboxCallback(item, TodoType.longTerm);
+                                Provider.of<BaseDatabaseService>(context, listen: false)
+                                    .checkboxCallback(item, TodoType.longTerm);
                               },
                               todoType: TodoType.longTerm,
                             ),

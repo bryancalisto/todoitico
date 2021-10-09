@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todoitico/models/todo.dart';
 import 'package:todoitico/services/theDatabaseSvc.dart';

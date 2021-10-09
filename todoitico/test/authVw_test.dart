@@ -18,12 +18,7 @@ void main() {
   MockTheDatabaseService mockTheDatabaseService = MockTheDatabaseService();
 
   List<Todo> todos = [
-    Todo(
-        id: 'id',
-        limitDate: DateTime.now(),
-        created: DateTime.now(),
-        content: 'content',
-        status: 'P')
+    Todo(id: 'id', limitDate: DateTime.now(), created: DateTime.now(), content: 'content', status: 'P')
   ];
 
   Widget makeTestableWidget({required Widget child}) => MultiProvider(
@@ -89,6 +84,8 @@ void main() {
     // ARRANGE
     when(() => mockAuthService.login(any(that: isNotEmpty), any(that: isNotEmpty))).thenAnswer((_) async => true);
     when(() => mockTheDatabaseService.getLongTermTodos()).thenAnswer((_) async => Future.value(todos));
+    when(() => mockTheDatabaseService.getDailyTodos(any(that: isNotNull)))
+        .thenAnswer((_) async => Future.value(todos));
     // ACT
     await tester.runAsync(() async {
       await tester.pumpWidget(makeTestableWidget(child: LoginVw()));

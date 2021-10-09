@@ -1,13 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todoitico/models/todo.dart';
 import 'package:todoitico/services/theDatabaseSvc.dart';
+import 'package:todoitico/utils/dateHelpers.dart';
 import 'package:todoitico/views/manageTodoVw.dart';
 import 'package:todoitico/widgets/theLoader.dart';
-import 'package:todoitico/widgets/todoList.dart';
+import 'package:todoitico/widgets/todoTile.dart';
 
 class ListDailyVw extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +24,9 @@ class ListDailyVw extends StatelessWidget {
             builder: (context) => SingleChildScrollView(
               child: Container(
                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: ManageTodoVw(todoType: TodoType.daily,),
+                child: ManageTodoVw(
+                  todoType: TodoType.daily,
+                ),
               ),
             ),
           );
@@ -36,7 +38,7 @@ class ListDailyVw extends StatelessWidget {
         ),
       ),
       body: FutureBuilder(
-        future: Provider.of<BaseDatabaseService>(context).getLongTermTodos(),
+        future: Provider.of<BaseDatabaseService>(context).getDailyTodos(DateUtils.dateOnly(DateTime.now())),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(
@@ -46,12 +48,13 @@ class ListDailyVw extends StatelessWidget {
                   padding: EdgeInsets.only(left: 10, top: 20, right: 10, bottom: 20),
                   child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
                     Icon(
-                      Icons.all_inclusive,
-                      size: 23,
+                      Icons.android_sharp,
+                      size: 21,
                     ),
                     SizedBox(width: 5),
                     Text(
-                      'Pendientes: ${snapshot.data}',
+                      // 'Pendientes: ${(snapshot.data as List<Todo>).where((t) => t.status == 'P').length}',
+                      'Para hoy...',
                       style: TextStyle(fontSize: 22),
                     ),
                   ]),
@@ -66,17 +69,43 @@ class ListDailyVw extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                     ),
-                    // child: TodoList(),
-                    child: Text('listdailyvw'),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            DateHelpers.inSpanishDate(DateTime.now()),
+                            style: TextStyle(fontSize: 19),
+                          ),
+                        ),
+                        Expanded(
+                          child: ListView(
+                            children: (snapshot.data as List<Todo>)
+                                .map(
+                                  (item) => TodoTile(
+                                    key: Key(item.id),
+                                    todo: item,
+                                    chkboxCallback: (newState) {
+                                      Provider.of<BaseDatabaseService>(context, listen: false)
+                                          .checkboxCallback(item, TodoType.daily);
+                                    },
+                                    todoType: TodoType.daily,
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                )
+                ),
               ],
             );
           } else if (snapshot.hasError) {
             if (snapshot.error.toString() == "PlatformException(get-failed, Client is offline, null, null)") {
               return Center(child: Text('Se requiere acceso a Internet'));
             }
-            return Center(child: Text('Error listTodosVw: ${snapshot.error.toString()}'));
+            return Center(child: Text('Error listDailyVw: ${snapshot.error.toString()}'));
           } else {
             return Center(child: TheLoader());
           }
