@@ -1,3 +1,4 @@
+import 'package:draggable_fab/draggable_fab.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todoitico/models/todo.dart';
@@ -11,29 +12,31 @@ class ListLongTermVw extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.greenAccent,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.greenAccent,
-        shape: StadiumBorder(
-          side: BorderSide(color: Colors.white70, width: 5),
-        ),
-        onPressed: () {
-          showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            builder: (context) => SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: ManageTodoVw(
-                  todoType: TodoType.longTerm,
+      floatingActionButton: DraggableFab(
+        child: FloatingActionButton(
+          backgroundColor: Colors.greenAccent,
+          shape: StadiumBorder(
+            side: BorderSide(color: Colors.white70, width: 5),
+          ),
+          onPressed: () {
+            showModalBottomSheet(
+              isScrollControlled: true,
+              context: context,
+              builder: (context) => SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                  child: ManageTodoVw(
+                    todoType: TodoType.longTerm,
+                  ),
                 ),
               ),
-            ),
-          );
-        },
-        child: Icon(
-          Icons.add,
-          color: Colors.black,
-          size: 39,
+            );
+          },
+          child: Icon(
+            Icons.add,
+            color: Colors.black,
+            size: 39,
+          ),
         ),
       ),
       body: FutureBuilder(
