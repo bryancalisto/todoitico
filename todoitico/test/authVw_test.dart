@@ -83,9 +83,9 @@ void main() {
   testWidgets('Should be redirected to ListTodosVw if login was successful', (WidgetTester tester) async {
     // ARRANGE
     when(() => mockAuthService.login(any(that: isNotEmpty), any(that: isNotEmpty))).thenAnswer((_) async => true);
-    when(() => mockTheDatabaseService.getLongTermTodos()).thenAnswer((_) async => Future.value(todos));
-    when(() => mockTheDatabaseService.getDailyTodos(any(that: isNotNull)))
-        .thenAnswer((_) async => Future.value(todos));
+    when(() => mockTheDatabaseService.suscribeForLongTermTodos()).thenAnswer((_) => Stream.value(todos));
+    when(() => mockTheDatabaseService.suscribeForDailyTodos(any(that: isNotNull)))
+        .thenAnswer((_) => Stream.value(todos));
     // ACT
     await tester.runAsync(() async {
       await tester.pumpWidget(makeTestableWidget(child: LoginVw()));
@@ -97,6 +97,7 @@ void main() {
       // ASSERT
       verify(() => mockAuthService.login('test1', 'test2'));
       expect(find.byType(ListTodosVw), findsOneWidget);
+      verify(()=>mockTheDatabaseService.suscribeForDailyTodos(any(that: isNotNull)));
     });
   });
 }

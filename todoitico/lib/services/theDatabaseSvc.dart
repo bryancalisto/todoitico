@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +12,10 @@ enum TodoType {
 }
 
 abstract class BaseDatabaseService implements ChangeNotifier {
+  Stream<List<Todo>> suscribeForLongTermTodos();
+
+  Stream<List<Todo>> suscribeForDailyTodos(DateTime date);
+
   Future<List<Todo>> getLongTermTodos();
 
   Future<List<Todo>> getDailyTodos(DateTime date);
@@ -43,8 +49,54 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     return ref;
   }
 
-  String createDateKey(DateTime date){
+  String createDateKey(DateTime date) {
     return DateFormat('yyyyMMdd').format(date);
+  }
+
+  Stream<List<Todo>> suscribeForLongTermTodos() async*{
+    DatabaseReference ref = createTodoRef(TodoType.longTerm);
+
+    try {
+      await for(final event in ref.onValue){
+        List<Todo> todos = [];
+
+        if (event.snapshot.value != null) {
+          final values = Map<String, dynamic>.from(event.snapshot.value);
+
+          values.forEach((key, values) {
+            Todo todo = Todo.fromJson(new Map<String, dynamic>.from(values));
+            todo.id = key;
+            todos.add(todo);
+          });
+        }
+
+        yield todos;
+      }
+    } catch (e) {
+      print('Error suscribeForTodos: ' + e.toString());
+    }
+  }
+
+  Stream<List<Todo>> suscribeForDailyTodos(DateTime date) async*{
+    DatabaseReference ref = createTodoRef(TodoType.daily);
+
+    try {
+      await for(final event in ref.child(createDateKey(date)).onValue){
+        List<Todo> todos = [];
+        if (event.snapshot.value != null) {
+          final values = Map<String, dynamic>.from(event.snapshot.value);
+          values.forEach((key, values) {
+            Todo todo = Todo.fromJson(new Map<String, dynamic>.from(values));
+            todo.id = key;
+            todos.add(todo);
+          });
+        }
+        yield todos;
+      }
+
+    } catch (e) {
+      print('Error suscribeForTodos: ' + e.toString());
+    }
   }
 
   Future<List<Todo>> getLongTermTodos() async {
@@ -54,7 +106,7 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     try {
       var receivedTodos = await ref.get();
 
-      if(receivedTodos.value == null){
+      if (receivedTodos.value == null) {
         return todos;
       }
 
@@ -72,14 +124,14 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     return todos;
   }
 
-  Future< List<Todo>> getDailyTodos(DateTime date) async {
-     List<Todo> todos=[];
+  Future<List<Todo>> getDailyTodos(DateTime date) async {
+    List<Todo> todos = [];
     DatabaseReference ref = createTodoRef(TodoType.daily);
 
     try {
       var receivedTodos = await ref.child(createDateKey(date)).get();
 
-      if(receivedTodos.value == null){
+      if (receivedTodos.value == null) {
         return todos;
       }
 

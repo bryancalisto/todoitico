@@ -13,7 +13,7 @@ class ListDailyVw extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.greenAccent,
-      floatingActionButton:  DraggableFab(
+      floatingActionButton: DraggableFab(
         child: FloatingActionButton(
           backgroundColor: Colors.greenAccent,
           shape: StadiumBorder(
@@ -23,18 +23,14 @@ class ListDailyVw extends StatelessWidget {
             showModalBottomSheet(
               isScrollControlled: true,
               context: context,
-              builder: (context) =>
-                  SingleChildScrollView(
-                    child: Container(
-                      padding: EdgeInsets.only(bottom: MediaQuery
-                          .of(context)
-                          .viewInsets
-                          .bottom),
-                      child: ManageTodoVw(
-                        todoType: TodoType.daily,
-                      ),
-                    ),
+              builder: (context) => SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                  child: ManageTodoVw(
+                    todoType: TodoType.daily,
                   ),
+                ),
+              ),
             );
           },
           child: Icon(
@@ -44,8 +40,8 @@ class ListDailyVw extends StatelessWidget {
           ),
         ),
       ),
-      body: FutureBuilder(
-        future: Provider.of<BaseDatabaseService>(context).getDailyTodos(DateUtils.dateOnly(DateTime.now())),
+      body: StreamBuilder<List<Todo>>(
+        stream: Provider.of<BaseDatabaseService>(context).suscribeForDailyTodos(DateTime.now()),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(
@@ -60,7 +56,6 @@ class ListDailyVw extends StatelessWidget {
                     ),
                     SizedBox(width: 5),
                     Text(
-                      // 'Pendientes: ${(snapshot.data as List<Todo>).where((t) => t.status == 'P').length}',
                       'Para hoy...',
                       style: TextStyle(fontSize: 22),
                     ),
@@ -89,8 +84,7 @@ class ListDailyVw extends StatelessWidget {
                           child: ListView(
                             children: (snapshot.data as List<Todo>)
                                 .map(
-                                  (item) =>
-                                  TodoTile(
+                                  (item) => TodoTile(
                                     key: Key(item.id),
                                     todo: item,
                                     chkboxCallback: (newState) {
@@ -99,7 +93,7 @@ class ListDailyVw extends StatelessWidget {
                                     },
                                     todoType: TodoType.daily,
                                   ),
-                            )
+                                )
                                 .toList(),
                           ),
                         ),

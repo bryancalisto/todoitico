@@ -39,10 +39,11 @@ class ListLongTermVw extends StatelessWidget {
           ),
         ),
       ),
-      body: FutureBuilder(
-        future: Provider.of<BaseDatabaseService>(context).getLongTermTodos(),
+      body: StreamBuilder<List<Todo>>(
+        stream: Provider.of<BaseDatabaseService>(context).suscribeForLongTermTodos(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            final List<Todo> todos = (snapshot.data as List<Todo>);
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -55,7 +56,7 @@ class ListLongTermVw extends StatelessWidget {
                     ),
                     SizedBox(width: 5),
                     Text(
-                      'Pendientes: ${(snapshot.data as List<Todo>).where((t) => t.status == 'P').length}',
+                      'Pendientes: ${todos.length}',
                       style: TextStyle(fontSize: 22),
                     ),
                   ]),
@@ -72,7 +73,8 @@ class ListLongTermVw extends StatelessWidget {
                     ),
                     // child: LongTermTodoList(todos: snapshot.data as List<Todo>),
                     child: ListView(
-                      children: (snapshot.data as List<Todo>)
+                      // children: (snapshot.data as List<Todo>)
+                      children: todos
                           .map(
                             (item) => TodoTile(
                               key: Key(item.id),
