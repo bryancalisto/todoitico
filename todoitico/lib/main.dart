@@ -38,7 +38,7 @@ class _TodoitoAppState extends State<TodoitoApp> {
               builder: (context, child) {
                 return MaterialApp(
                   theme: ThemeData(
-                    primarySwatch: Colors.cyan,
+                    primarySwatch: Colors.grey,
                     textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.greenAccent),
                     fontFamily: 'Merriweather',
                     inputDecorationTheme: InputDecorationTheme(

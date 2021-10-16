@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 abstract class BaseAuthService {
   Future<bool> login(String username, String passwd);
 
-  void logout();
+  Future<void> logout();
 }
 
 class AuthService implements BaseAuthService {
@@ -25,7 +25,8 @@ class AuthService implements BaseAuthService {
   }
 
   @override
-  void logout() {
+  Future<void> logout() async {
+    await firebaseAuth.signOut();
     _user = null;
   }
 }

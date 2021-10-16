@@ -10,7 +10,7 @@ class ManageTodoVw extends StatefulWidget {
   final Todo? todoToUpdate;
   final TodoType todoType;
 
-  const ManageTodoVw({this.todoToUpdate,required this.todoType}) : super();
+  const ManageTodoVw({this.todoToUpdate, required this.todoType}) : super();
 
   @override
   _ManageTodoVwState createState() => _ManageTodoVwState();
@@ -59,46 +59,47 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                   labelText: 'Contenido',
                 ),
               ),
-              if(widget.todoType == TodoType.longTerm)
-              ...[SizedBox(height: 20),
-              TextField(
-                readOnly: true,
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                      builder: (context, datePicker) {
-                        return Theme(
-                          data: ThemeData.light().copyWith(
-                            colorScheme: ColorScheme.light(
-                              primary: Colors.greenAccent,
-                              onPrimary: Colors.white,
-                              surface: Colors.greenAccent,
-                              onSurface: Colors.black,
+              if (widget.todoType == TodoType.longTerm) ...[
+                SizedBox(height: 20),
+                TextField(
+                  readOnly: true,
+                  onTap: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                        builder: (context, datePicker) {
+                          return Theme(
+                            data: ThemeData.light().copyWith(
+                              colorScheme: ColorScheme.light(
+                                primary: Colors.greenAccent,
+                                onPrimary: Colors.white,
+                                surface: Colors.greenAccent,
+                                onSurface: Colors.black,
+                              ),
                             ),
-                          ),
-                          child: datePicker!,
-                        );
-                      },
-                      context: context,
-                      initialDate:  date??DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2101));
+                            child: datePicker!,
+                          );
+                        },
+                        context: context,
+                        initialDate: date ?? DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101));
 
-                  if (pickedDate != null) {
-                    dateCtl.text = DateFormat('yyyy-MM-dd').format(pickedDate);
-                    setState(() {
-                      date = pickedDate;
-                    });
-                  }
-                },
-                autofocus: true,
-                keyboardType: TextInputType.datetime,
-                maxLength: 10,
-                controller: dateCtl,
-                decoration: InputDecoration(
-                  labelText: 'Fecha límite',
-                ),
-              )]
-              else ...[],
+                    if (pickedDate != null) {
+                      dateCtl.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+                      setState(() {
+                        date = pickedDate;
+                      });
+                    }
+                  },
+                  autofocus: true,
+                  keyboardType: TextInputType.datetime,
+                  maxLength: 10,
+                  controller: dateCtl,
+                  decoration: InputDecoration(
+                    labelText: 'Fecha límite',
+                  ),
+                )
+              ] else
+                ...[],
               SizedBox(height: 20),
               MainButton(
                 text: 'Guardar',
@@ -125,7 +126,8 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                       widget.todoToUpdate!.content = contentCtl.text;
                       widget.todoToUpdate!.limitDate = date;
 
-                      Provider.of<BaseDatabaseService>(context, listen: false).updateTodo(widget.todoToUpdate!, widget.todoType);
+                      Provider.of<BaseDatabaseService>(context, listen: false)
+                          .updateTodo(widget.todoToUpdate!, widget.todoType);
                     }
                     Navigator.pop(context);
                   } catch (e) {
