@@ -30,7 +30,9 @@ abstract class BaseDatabaseService implements ChangeNotifier {
 }
 
 class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
-  final DatabaseReference _dbRef = FirebaseDatabase.instance.reference().child(FirebaseAuth.instance.currentUser!.uid);
+  DatabaseReference get _dbRef {
+    return FirebaseDatabase.instance.reference().child(FirebaseAuth.instance.currentUser!.uid);
+  }
 
   @override
   void dispose() {
@@ -53,11 +55,11 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     return DateFormat('yyyyMMdd').format(date);
   }
 
-  Stream<List<Todo>> suscribeForLongTermTodos() async*{
+  Stream<List<Todo>> suscribeForLongTermTodos() async* {
     DatabaseReference ref = createTodoRef(TodoType.longTerm);
 
     try {
-      await for(final event in ref.onValue){
+      await for (final event in ref.onValue) {
         List<Todo> todos = [];
 
         if (event.snapshot.value != null) {
@@ -77,11 +79,11 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
     }
   }
 
-  Stream<List<Todo>> suscribeForDailyTodos(DateTime date) async*{
+  Stream<List<Todo>> suscribeForDailyTodos(DateTime date) async* {
     DatabaseReference ref = createTodoRef(TodoType.daily);
 
     try {
-      await for(final event in ref.child(createDateKey(date)).onValue){
+      await for (final event in ref.child(createDateKey(date)).onValue) {
         List<Todo> todos = [];
         if (event.snapshot.value != null) {
           final values = Map<String, dynamic>.from(event.snapshot.value);
@@ -93,7 +95,6 @@ class TheDatabaseService with ChangeNotifier implements BaseDatabaseService {
         }
         yield todos;
       }
-
     } catch (e) {
       print('Error suscribeForTodos: ' + e.toString());
     }

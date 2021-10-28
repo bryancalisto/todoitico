@@ -9,7 +9,8 @@ class TodoTile extends StatelessWidget {
   final Todo todo;
   final TodoType todoType;
 
-  const TodoTile({required this.todo, required this.chkboxCallback, required Key key,required this.todoType}) : super(key: key);
+  const TodoTile({required this.todo, required this.chkboxCallback, required Key key, required this.todoType})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,33 +23,45 @@ class TodoTile extends StatelessWidget {
             });
       },
       child: Container(
+        margin: EdgeInsets.all(7),
         key: key,
-        padding: EdgeInsets.only(left: 10, top: 5, right: 10, bottom: 5),
-        child: ListTile(
-          onTap: () {
-            showModalBottomSheet(
-              isScrollControlled: true,
-              context: context,
-              builder: (context) => SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                  child: ManageTodoVw(todoToUpdate: todo, todoType: todoType),
+        child: Container(
+          margin: EdgeInsetsDirectional.only(start: 9, bottom: 1),
+          padding: EdgeInsets.symmetric(vertical: 7, horizontal: 15),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: ListTile(
+                  onTap: () {
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => SingleChildScrollView(
+                        child: Container(
+                          child: ManageTodoVw(todoToUpdate: todo, todoType: todoType),
+                        ),
+                      ),
+                    );
+                  },
+                  title: Text(todo.content),
+                  trailing: Checkbox(
+                    activeColor: Colors.greenAccent,
+                    checkColor: Colors.black,
+                    value: todo.status == 'P' ? false : true,
+                    onChanged: chkboxCallback,
+                  ),
                 ),
               ),
-            );
-          },
-          title: Text(todo.content),
-          trailing: Checkbox(
-            activeColor: Colors.greenAccent,
-            checkColor: Colors.black,
-            value: todo.status == 'P' ? false : true,
-            onChanged: chkboxCallback,
+            ],
           ),
         ),
         decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Colors.grey),
-          ),
+          color: Colors.greenAccent,
+          borderRadius: BorderRadius.circular(20),
         ),
       ),
     );
