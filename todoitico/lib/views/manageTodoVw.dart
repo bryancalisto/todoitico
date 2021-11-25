@@ -35,6 +35,9 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
 
   @override
   Widget build(BuildContext context) {
+    final _primaryColor = Theme.of(context).colorScheme.primary;
+    final _onPrimaryColor = Theme.of(context).colorScheme.onPrimary;
+
     return Container(
       color: Color(0xff757575),
       padding: EdgeInsets.all(5),
@@ -66,17 +69,7 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                   onTap: () async {
                     DateTime? pickedDate = await showDatePicker(
                         builder: (context, datePicker) {
-                          return Theme(
-                            data: ThemeData.light().copyWith(
-                              colorScheme: ColorScheme.light(
-                                primary: Colors.greenAccent,
-                                onPrimary: Colors.white,
-                                surface: Colors.greenAccent,
-                                onSurface: Colors.black,
-                              ),
-                            ),
-                            child: datePicker!,
-                          );
+                          return datePicker!
                         },
                         context: context,
                         initialDate: date ?? DateTime.now(),

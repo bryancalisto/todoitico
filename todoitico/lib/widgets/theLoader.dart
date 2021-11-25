@@ -7,7 +7,7 @@ class TheLoader extends StatelessWidget {
       color: Colors.white,
       alignment: Alignment.center,
       child: CircularProgressIndicator(
-        color: Colors.greenAccent,
+        color: Theme.of(context).colorScheme.onPrimary,
         backgroundColor: Colors.white,
       ),
     );

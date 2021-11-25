@@ -14,6 +14,9 @@ class TodoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _primaryColor = Theme.of(context).colorScheme.primary;
+    final _onPrimaryColor = Theme.of(context).colorScheme.onPrimary;
+
     return GestureDetector(
       onLongPress: () {
         showDialog(
@@ -49,8 +52,8 @@ class TodoTile extends StatelessWidget {
                   },
                   title: Text(todo.content),
                   trailing: Checkbox(
-                    activeColor: Colors.greenAccent,
-                    checkColor: Colors.black,
+                    activeColor: _primaryColor,
+                    checkColor: _onPrimaryColor,
                     value: todo.status == 'P' ? false : true,
                     onChanged: chkboxCallback,
                   ),
@@ -60,8 +63,15 @@ class TodoTile extends StatelessWidget {
           ),
         ),
         decoration: BoxDecoration(
-          color: Colors.greenAccent,
+          color: _primaryColor,
           borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 6,
+              color: _onPrimaryColor,
+              spreadRadius: 0.1,
+            ),
+          ],
         ),
       ),
     );

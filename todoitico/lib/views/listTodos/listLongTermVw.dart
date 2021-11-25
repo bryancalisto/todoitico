@@ -10,11 +10,14 @@ import 'package:todoitico/widgets/todoTile.dart';
 class ListLongTermVw extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final _primaryColor = Theme.of(context).colorScheme.primary;
+    final _onPrimaryColor = Theme.of(context).colorScheme.onPrimary;
+
     return Scaffold(
-      backgroundColor: Colors.greenAccent,
+      backgroundColor: _primaryColor,
       floatingActionButton: DraggableFab(
         child: FloatingActionButton(
-          backgroundColor: Colors.greenAccent,
+          backgroundColor: _primaryColor,
           shape: StadiumBorder(
             side: BorderSide(color: Colors.white70, width: 5),
           ),
@@ -34,7 +37,7 @@ class ListLongTermVw extends StatelessWidget {
           },
           child: Icon(
             Icons.add,
-            color: Colors.black,
+            color: _onPrimaryColor,
             size: 39,
           ),
         ),
@@ -49,20 +52,13 @@ class ListLongTermVw extends StatelessWidget {
               children: [
                 Container(
                   padding: EdgeInsets.only(left: 10, top: 20, right: 10, bottom: 20),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
-                    Icon(
-                      Icons.android_rounded,
-                      size: 21,
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      'Pendientes: ${todos.length}',
-                      style: TextStyle(fontSize: 22),
-                    ),
-                  ]),
+                  child: Text(
+                    'P E N D I E N T E S:  ${todos.length}',
+                    style: TextStyle(fontSize: 22, color: _onPrimaryColor),
+                  ),
                   decoration: BoxDecoration(
                     border: Border(
-                      bottom: BorderSide(color: Colors.black, width: 4),
+                      bottom: BorderSide(color: _onPrimaryColor, width: 4),
                     ),
                   ),
                 ),
@@ -71,9 +67,7 @@ class ListLongTermVw extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                     ),
-                    // child: LongTermTodoList(todos: snapshot.data as List<Todo>),
                     child: ListView(
-                      // children: (snapshot.data as List<Todo>)
                       children: todos
                           .map(
                             (item) => TodoTile(

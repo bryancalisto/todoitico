@@ -11,11 +11,13 @@ import 'package:todoitico/widgets/todoTile.dart';
 class ListDailyVw extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final _primaryColor = Theme.of(context).colorScheme.primary;
+    final _onPrimaryColor = Theme.of(context).colorScheme.onPrimary;
+
     return Scaffold(
-      backgroundColor: Colors.greenAccent,
+      backgroundColor: _primaryColor,
       floatingActionButton: DraggableFab(
         child: FloatingActionButton(
-          backgroundColor: Colors.greenAccent,
           shape: StadiumBorder(
             side: BorderSide(color: Colors.white70, width: 5),
           ),
@@ -35,7 +37,7 @@ class ListDailyVw extends StatelessWidget {
           },
           child: Icon(
             Icons.add,
-            color: Colors.black,
+            color: _onPrimaryColor,
             size: 39,
           ),
         ),
@@ -49,20 +51,14 @@ class ListDailyVw extends StatelessWidget {
               children: [
                 Container(
                   padding: EdgeInsets.only(left: 10, top: 20, right: 10, bottom: 20),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
-                    Icon(
-                      Icons.android_sharp,
-                      size: 21,
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      'Para hoy...',
-                      style: TextStyle(fontSize: 22),
-                    ),
-                  ]),
+                  child: Text(
+                    'P A R A  H O Y',
+                    style: TextStyle(
+                        fontSize: 22, color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.bold),
+                  ),
                   decoration: BoxDecoration(
                     border: Border(
-                      bottom: BorderSide(color: Colors.black, width: 4),
+                      bottom: BorderSide(color: Theme.of(context).colorScheme.onPrimary, width: 4),
                     ),
                   ),
                 ),

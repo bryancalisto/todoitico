@@ -13,14 +13,13 @@ void main() async {
   runApp(TodoitoApp());
 }
 
-
 class TodoitoApp extends StatefulWidget {
   @override
   State<TodoitoApp> createState() => _TodoitoAppState();
 }
 
 class _TodoitoAppState extends State<TodoitoApp> {
-  TheDatabaseService _dbService =TheDatabaseService();
+  TheDatabaseService _dbService = TheDatabaseService();
   AuthService _authService = AuthService();
 
   @override
@@ -30,93 +29,57 @@ class _TodoitoAppState extends State<TodoitoApp> {
 
   @override
   Widget build(BuildContext context) {
-          return MultiProvider(
-              providers: [
-                ChangeNotifierProvider<BaseDatabaseService>.value(value: _dbService),
-                Provider<BaseAuthService>.value(value: _authService),
-              ],
-              builder: (context, child) {
-                return MaterialApp(
-                  theme: ThemeData(
-                    primarySwatch: Colors.grey,
-                    textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.greenAccent),
-                    fontFamily: 'Merriweather',
-                    inputDecorationTheme: InputDecorationTheme(
-                      labelStyle: TextStyle(color: Colors.grey),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.greenAccent,
-                          width: 3,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.greenAccent,
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                  ),
-                  initialRoute: WelcomeVw.route,
-                  routes: {
-                    LoginVw.route: (context) => LoginVw(),
-                    ListTodosVw.route: (context) => ListTodosVw(),
-                    WelcomeVw.route: (context) => WelcomeVw(),
-                  },
-                );
-              });
-    // return FutureBuilder<FirebaseApp>(
-    //   future: Firebase.initializeApp(),
-    //   builder: (context, snapshot) {
-    //     if (snapshot.connectionState == ConnectionState.done) {
-    //       return MultiProvider(
-    //           providers: [
-    //             // ChangeNotifierProvider<BaseDatabaseService>.value(create: (_) => TheDatabaseService()),
-    //             ChangeNotifierProvider<BaseDatabaseService>.value(value: _dbService),
-    //             // Provider<BaseAuthService>(create: (_) => AuthService()),
-    //             Provider<BaseAuthService>.value(value: _authService),
-    //           ],
-    //           builder: (context, child) {
-    //             return MaterialApp(
-    //               theme: ThemeData(
-    //                 textSelectionTheme: TextSelectionThemeData(cursorColor: Colors.greenAccent),
-    //                 fontFamily: 'Merriweather',
-    //                 inputDecorationTheme: InputDecorationTheme(
-    //                   labelStyle: TextStyle(color: Colors.grey),
-    //                   enabledBorder: UnderlineInputBorder(
-    //                     borderSide: BorderSide(
-    //                       color: Colors.greenAccent,
-    //                       width: 3,
-    //                     ),
-    //                   ),
-    //                   focusedBorder: OutlineInputBorder(
-    //                     borderSide: BorderSide(
-    //                       color: Colors.greenAccent,
-    //                       width: 2,
-    //                     ),
-    //                   ),
-    //                 ),
-    //               ),
-    //               initialRoute: WelcomeVw.route,
-    //               routes: {
-    //                 LoginVw.route: (context) => LoginVw(),
-    //                 ListTodosVw.route: (context) => ListTodosVw(),
-    //                 WelcomeVw.route: (context) => WelcomeVw(),
-    //               },
-    //             );
-    //           });
-    //     } else if (snapshot.hasError) {
-    //       return MaterialApp(
-    //         home: Scaffold(
-    //           body: Center(
-    //             child: Text('ERROR main: ${snapshot.error}'),
-    //           ),
-    //         ),
-    //       );
-    //     } else {
-    //       return TheLoader();
-    //     }
-    //   },
-    // );
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<BaseDatabaseService>.value(value: _dbService),
+        Provider<BaseAuthService>.value(value: _authService),
+      ],
+      builder: (context, child) {
+        return MaterialApp(
+          theme: ThemeData(
+            backgroundColor: const Color(0xff091833),
+            colorScheme: const ColorScheme(
+              background: Color(0xff091833),
+              primary: Color(0xff711c91),
+              onPrimary: Color(0xffea00d9),
+              secondary: Color(0xff711c91),
+              onSecondary: Color(0xffea00d9),
+              brightness: Brightness.light,
+              error: Colors.yellow,
+              onBackground: Color(0xffea00d9),
+              onError: Color(0xff091833),
+              surface: Color(0xffea00d9),
+              onSurface: Colors.black,
+              primaryVariant: Color(0xff711c91),
+              secondaryVariant: Color(0xff711c91),
+            ),
+            primarySwatch: Colors.grey,
+            textSelectionTheme: TextSelectionThemeData(cursorColor: Color(0xff711c91)),
+            fontFamily: 'Merriweather',
+            inputDecorationTheme: InputDecorationTheme(
+              labelStyle: TextStyle(color: Colors.grey),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0xffea00d9),
+                  width: 3,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0xffea00d9),
+                  width: 2,
+                ),
+              ),
+            ),
+          ),
+          initialRoute: WelcomeVw.route,
+          routes: {
+            LoginVw.route: (context) => LoginVw(),
+            ListTodosVw.route: (context) => ListTodosVw(),
+            WelcomeVw.route: (context) => WelcomeVw(),
+          },
+        );
+      },
+    );
   }
 }
