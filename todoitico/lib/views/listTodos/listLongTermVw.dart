@@ -54,7 +54,7 @@ class ListLongTermVw extends StatelessWidget {
                   padding: EdgeInsets.only(left: 10, top: 20, right: 10, bottom: 20),
                   child: Text(
                     'P E N D I E N T E S:  ${todos.length}',
-                    style: TextStyle(fontSize: 22, color: _onPrimaryColor),
+                    style: TextStyle(fontSize: 18, color: _onPrimaryColor),
                   ),
                   decoration: BoxDecoration(
                     border: Border(

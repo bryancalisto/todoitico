@@ -56,7 +56,7 @@ class ListDailyVw extends StatelessWidget {
                       Text(
                         'P A R A  H O Y',
                         style: TextStyle(
-                            fontSize: 22, color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.bold),
+                            fontSize: 18, color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         DateHelpers.inSpanishDate(DateTime.now()),

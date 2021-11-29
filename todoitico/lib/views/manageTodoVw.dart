@@ -36,7 +36,6 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
   @override
   Widget build(BuildContext context) {
     final _primaryColor = Theme.of(context).colorScheme.primary;
-    final _onPrimaryColor = Theme.of(context).colorScheme.onPrimary;
 
     return Container(
       color: Color(0xff757575),
@@ -59,7 +58,8 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                 maxLines: 3,
                 maxLength: 256,
                 decoration: InputDecoration(
-                  labelText: 'Contenido',
+                  labelText: 'To-do',
+                  labelStyle: TextStyle(color: _primaryColor)
                 ),
               ),
               if (widget.todoType == TodoType.longTerm) ...[
@@ -89,6 +89,7 @@ class _ManageTodoVwState extends State<ManageTodoVw> {
                   controller: dateCtl,
                   decoration: InputDecoration(
                     labelText: 'Fecha límite',
+                  labelStyle: TextStyle(color: _primaryColor)
                   ),
                 )
               ] else
