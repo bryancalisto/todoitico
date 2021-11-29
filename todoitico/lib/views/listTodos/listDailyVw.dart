@@ -51,10 +51,18 @@ class ListDailyVw extends StatelessWidget {
               children: [
                 Container(
                   padding: EdgeInsets.only(left: 10, top: 20, right: 10, bottom: 20),
-                  child: Text(
-                    'P A R A  H O Y',
-                    style: TextStyle(
-                        fontSize: 22, color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.bold),
+                  child: Column(
+                    children: [
+                      Text(
+                        'P A R A  H O Y',
+                        style: TextStyle(
+                            fontSize: 22, color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        DateHelpers.inSpanishDate(DateTime.now()),
+                        style: TextStyle(fontSize: 12, color: Colors.white, letterSpacing: 2),
+                      ),
+                    ],
                   ),
                   decoration: BoxDecoration(
                     border: Border(
@@ -69,13 +77,6 @@ class ListDailyVw extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            DateHelpers.inSpanishDate(DateTime.now()),
-                            style: TextStyle(fontSize: 19),
-                          ),
-                        ),
                         Expanded(
                           child: ListView(
                             children: (snapshot.data as List<Todo>)
